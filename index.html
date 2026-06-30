@@ -6,7 +6,7 @@
 <title>داشبۆردی لێپرسراوی مەڵبەند</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --c1: #0a0f1e;
@@ -28,7 +28,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{
-  font-family:'Tajawal',sans-serif;
+  font-family:'Noto Sans Arabic',sans-serif;
   background:var(--c1);
   color:var(--text-bright);
   min-height:100vh;
@@ -97,7 +97,10 @@ body::after{
 @keyframes dash-anim  {to{stroke-dashoffset:0;}}
 
 .login-wrap{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  min-height:100vh;
+  min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;padding:24px;
+  position:fixed;inset:0;overflow-y:auto;
 }
 .login-blob-wrap{
   position:relative;width:460px;height:460px;
@@ -187,7 +190,7 @@ body::after{
 }
 .lf-row input{
   flex:1;background:transparent;border:none;outline:none;
-  color:#fff;font-family:'Tajawal',sans-serif;font-size:.92rem;font-weight:500;
+  color:#fff;font-family:'Noto Sans Arabic',sans-serif;font-size:.92rem;font-weight:500;
   padding:12px 16px;
 }
 .lf-row input::placeholder{color:rgba(255,255,255,.3);}
@@ -197,7 +200,7 @@ body::after{
 
 .btn-login{
   padding:13px;border:none;border-radius:40px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:800;
+  font-family:'Noto Sans Arabic',sans-serif;font-size:.95rem;font-weight:800;
   background:linear-gradient(135deg,#00ffd5,#7b61ff);
   color:#0a0f1e;
   box-shadow:0 4px 24px rgba(0,255,213,.3),0 0 60px rgba(123,97,255,.2);
@@ -258,7 +261,7 @@ body::after{
   padding:7px 16px;border-radius:20px;font-size:.76rem;font-weight:700;
   background:rgba(255,97,171,.1);border:1px solid rgba(255,97,171,.3);
   color:#ff61ab;cursor:pointer;transition:all .2s;text-decoration:none;
-  font-family:'Tajawal',sans-serif;
+  font-family:'Noto Sans Arabic',sans-serif;
 }
 .btn-out:hover{background:rgba(255,97,171,.25);color:#fff;border-color:rgba(255,97,171,.6);}
 
@@ -291,7 +294,7 @@ body::after{
   border:1px solid var(--glass-border) !important;
   border-radius:10px !important;
   color:var(--text-bright) !important;
-  font-family:'Tajawal',sans-serif !important;
+  font-family:'Noto Sans Arabic',sans-serif !important;
   font-size:.86rem !important;font-weight:600 !important;
   padding:9px 13px !important;
   transition:border-color .2s,box-shadow .2s;
@@ -404,7 +407,7 @@ body::after{
 .btn-act{
   display:inline-flex;align-items:center;gap:8px;
   padding:9px 18px;border-radius:10px;font-size:.8rem;font-weight:700;
-  border:none;cursor:pointer;font-family:'Tajawal',sans-serif;
+  border:none;cursor:pointer;font-family:'Noto Sans Arabic',sans-serif;
   transition:all .2s;letter-spacing:.01em;
 }
 .btn-act-p{background:rgba(123,97,255,.18);color:#b39dff;border:1px solid rgba(123,97,255,.3);}
@@ -446,7 +449,7 @@ body::after{
   border:1px solid var(--glass-border) !important;
   border-radius:10px !important;
   color:var(--text-bright) !important;
-  font-family:'Tajawal',sans-serif !important;
+  font-family:'Noto Sans Arabic',sans-serif !important;
   font-size:.88rem !important;font-weight:600 !important;
   padding:10px 13px !important;
   transition:border-color .2s,box-shadow .2s;
@@ -470,7 +473,7 @@ body::after{
 .vbox-lbl{font-size:.68rem;font-weight:800;color:var(--text-dim);letter-spacing:.04em;margin-bottom:8px;}
 .vbox input{
   background:transparent !important;border:none !important;outline:none;
-  color:var(--text-bright) !important;font-family:'Tajawal',sans-serif !important;
+  color:var(--text-bright) !important;font-family:'Noto Sans Arabic',sans-serif !important;
   font-size:1.55rem !important;font-weight:900 !important;
   text-align:center;width:100%;padding:0 !important;box-shadow:none !important;
 }
@@ -534,7 +537,7 @@ body::after{
 .ccell-lbl{font-size:.62rem;font-weight:900;color:var(--text-dim);display:block;margin-bottom:4px;letter-spacing:.02em;}
 .ccell input{
   width:100%;text-align:center !important;
-  font-family:'Tajawal',sans-serif !important;
+  font-family:'Noto Sans Arabic',sans-serif !important;
   font-weight:700 !important;font-size:.83rem !important;
   padding:7px 3px !important;
   background:rgba(255,255,255,.04) !important;
@@ -557,7 +560,7 @@ body::after{
 /* submit */
 .sub-btn{
   width:100%;padding:15px;border:none;border-radius:14px;cursor:pointer;
-  font-family:'Tajawal',sans-serif;font-size:1rem;font-weight:900;
+  font-family:'Noto Sans Arabic',sans-serif;font-size:1rem;font-weight:900;
   background:linear-gradient(135deg,#00ffd5,#7b61ff);
   color:#0a0f1e;
   box-shadow:0 4px 28px rgba(0,255,213,.28),0 0 60px rgba(123,97,255,.15);
@@ -600,7 +603,7 @@ body::after{
 .mbtn{
   flex:1;padding:12px;border-radius:11px;
   font-size:.86rem;font-weight:800;cursor:pointer;border:none;
-  font-family:'Tajawal',sans-serif;transition:all .2s;
+  font-family:'Noto Sans Arabic',sans-serif;transition:all .2s;
 }
 .mbtn-ok {background:linear-gradient(135deg,#00ffd5,#7b61ff);color:#0a0f1e;}
 .mbtn-ok:hover{transform:translateY(-1px);}
@@ -621,6 +624,16 @@ body::after{
   .cfoot,.rem-tag{background:#f0fff8;border-color:#00c853;}
   .scard-val,.pct.puk,.pnm.puk,.cscore,.cfoot strong,.rem-tag strong{color:#00c853 !important;}
 }
+.btn-dash-excel{
+  width:100%;padding:9px 13px;border:none;border-radius:10px;cursor:pointer;
+  font-family:'Noto Sans Arabic',sans-serif;font-size:.82rem;font-weight:800;
+  background:linear-gradient(135deg,rgba(0,230,118,.18),rgba(0,200,81,.1));
+  border:1px solid rgba(0,230,118,.35);color:#69ffa8;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .2s;letter-spacing:.01em;
+}
+.btn-dash-excel:hover{background:linear-gradient(135deg,rgba(0,230,118,.32),rgba(0,200,81,.2));color:#fff;border-color:rgba(0,230,118,.6);transform:translateY(-1px);}
+
 @media(max-width:768px){
   .dash-body,.app-body .container{padding:14px;}
   .panels-row{gap:12px;}
@@ -633,6 +646,7 @@ body::after{
 
 <div class="aurora-bg"><div class="orb3"></div><div class="orb4"></div></div>
 
+<!-- ════════════════ LOGIN ════════════════ -->
 <div id="login-section">
 <div class="login-wrap">
   <div class="login-blob-wrap">
@@ -643,7 +657,7 @@ body::after{
     <div class="ring-dot2"></div>
     <div class="login-card">
       <div class="login-brand">
-        <h2>داشبۆردی لێپرسراوی مەڵبەند</h2>
+        <h2>سیستەمی ئەلیکترۆنی مەڵبەندی چەمچەماڵ</h2>
         <p>مەڵبەندی ١٢ی ڕێکخستنی چەمچەماڵ</p>
       </div>
       <form onsubmit="event.preventDefault();attemptLogin();" style="display:flex;flex-direction:column;gap:13px;">
@@ -670,6 +684,7 @@ body::after{
 </div>
 </div>
 
+<!-- ════════════════ DASHBOARD ════════════════ -->
 <div id="dashboard-section">
   <header class="top-bar">
     <div class="top-bar-inner">
@@ -681,7 +696,6 @@ body::after{
         </div>
       </div>
       <div class="top-actions">
-        <button class="btn-out" style="background:rgba(0,255,213,.1);color:#00ffd5;border-color:rgba(0,255,213,.3);" onclick="exportDashboardExcel()"><i class="fas fa-file-excel"></i> Excel</button>
         <div class="chip chip-green" style="animation-delay:.1s"><i class="fas fa-user-shield"></i> لێپرسراوی مەڵبەند</div>
         <div class="chip chip-red"   style="animation-delay:.2s"><i class="fas fa-satellite-dish"></i> لایڤ</div>
         <button class="btn-out" onclick="logout()"><i class="fas fa-sign-out-alt"></i> دەرچوون</button>
@@ -691,8 +705,9 @@ body::after{
 
   <div class="dash-body container-fluid">
 
+    <!-- فلتەرەکان -->
     <div class="gc filter-bar" style="margin-bottom:18px;">
-      <div class="row g-3">
+      <div class="row g-3 align-items-end">
         <div class="col-md-3 col-sm-6">
           <div class="flabel">١ — بازنە</div>
           <select class="gsel" id="baznaSelect" onchange="updateCenters()">
@@ -713,16 +728,23 @@ body::after{
           <div class="flabel">٣ — وێستگە</div>
           <select class="gsel" id="westgaSelect"><option value="all">گشتی</option></select>
         </div>
-        <div class="col-md-4 col-sm-8">
+        <div class="col-md-2 col-sm-4">
           <div class="flabel" style="color:var(--aurora1);">گەڕان بۆ کاندید</div>
           <div class="search-rel">
             <i class="fas fa-search search-ico"></i>
-            <input type="text" class="ginput" style="padding-right:36px!important;" placeholder="نموونە: 15 یان 1-5 یان 1,5,10" id="candidateSearch" oninput="renderCandidates()">
+            <input type="text" class="ginput" style="padding-right:36px!important;" placeholder="نموونە: 15 یان 1-5" id="candidateSearch" oninput="renderCandidates()">
           </div>
+        </div>
+        <div class="col-md-2 col-sm-4">
+          <div class="flabel" style="color:#69ffa8;">دانەبەرانی ئێکسڵ</div>
+          <button class="btn-dash-excel" onclick="exportDashboardExcel()">
+            <i class="fas fa-file-excel"></i> دابەزاندنی Excel
+          </button>
         </div>
       </div>
     </div>
 
+    <!-- ستاتەکان -->
     <div class="stat-grid">
       <div class="gc scard">
         <div class="scard-ico ico-p"><i class="fas fa-users"></i></div>
@@ -742,6 +764,7 @@ body::after{
       </div>
     </div>
 
+    <!-- پانێلەکان -->
     <div class="panels-row">
       <div class="gc panel">
         <div class="panel-hd">
@@ -768,6 +791,7 @@ body::after{
   </div>
 </div>
 
+<!-- ════════════════ APP ════════════════ -->
 <div id="app-section">
   <header class="top-bar no-print">
     <div class="top-bar-inner">
@@ -792,6 +816,7 @@ body::after{
 
     <div id="printable-area">
 
+      <!-- 1 جوگرافی -->
       <div class="gc fc">
         <div class="fc-head">
           <div class="fc-ico"><i class="fas fa-map-marker-alt"></i></div>
@@ -816,6 +841,7 @@ body::after{
         </div>
       </div>
 
+      <!-- 2 پوختەی دەنگ -->
       <div class="gc fc">
         <div class="fc-head">
           <div class="fc-ico"><i class="fas fa-chart-pie"></i></div>
@@ -840,6 +866,7 @@ body::after{
         </div>
       </div>
 
+      <!-- 3 لایەنەکان -->
       <div class="gc fc">
         <div class="fc-head">
           <div class="fc-ico"><i class="fas fa-landmark"></i></div>
@@ -890,6 +917,7 @@ body::after{
         </div>
       </div>
 
+      <!-- 4 کاندیدەکان -->
       <div class="gc fc" style="animation-delay:.2s;">
         <div class="puk-head">
           <i class="fas fa-user-check"></i>
@@ -906,7 +934,9 @@ body::after{
         </div>
       </div>
 
-    </div><div class="no-print" style="margin-bottom:14px;">
+    </div><!-- /printable-area -->
+
+    <div class="no-print" style="margin-bottom:14px;">
       <button class="sub-btn" id="mainSubmitBtn" onclick="showReviewModal()">
         <i class="fas fa-save"></i> تۆمارکردنی داتاکان
       </button>
@@ -918,6 +948,7 @@ body::after{
   </div>
 </div>
 
+<!-- Modal -->
 <div id="reviewModal" class="modal-ov" style="display:none;">
   <div class="modal-box">
     <div class="modal-title"><i class="fas fa-clipboard-check me-2" style="color:var(--aurora1);"></i> دڵنیابوونەوە</div>
@@ -1233,90 +1264,130 @@ function confirmSave(){
   onStationChange();
 }
 
-/* ─── EXCEL (کارمەند) ─── */
-function exportAdvancedExcel(){
+/* ─── DASHBOARD EXCEL EXPORT (پیشرفتە) ─── */
+function exportDashboardExcel(){
   const db=JSON.parse(localStorage.getItem('electionDB'))||{};
   const keys=Object.keys(db);
-  if(!keys.length){alert('هیچ وێستگەیەک تۆمار نەکراوە!');return;}
-  let t=`<html dir="rtl"><head><meta charset="UTF-8"></head><body><table border="1"><tr><th colspan="62" style="background:#064e3b;color:#fff;text-align:center;">ڕاپۆرتی هەڵبژاردن</th></tr><tr style="background:#eee;font-weight:bold;"><th>ناوی بنکە</th><th>وێستگە</th><th>دروست</th><th>پوچەڵ</th><th>یەکێتی</th><th>پارتی</th><th>گۆڕان</th><th>یەکگرتوو</th><th>نەوەی نوێ</th><th>کۆمەڵ</th><th>بەرەی گەل</th><th>هەڵوێست</th>`;
-  for(let i=1;i<=50;i++)t+=`<th>کاندیدی ${i}</th>`;
-  t+=`</tr>`;
-  keys.forEach(k=>{
-    const d=db[k];
-    t+=`<tr><td>${d.centerName}</td><td>${d.stationNum}</td><td>${d.validVotes||0}</td><td>${d.invalidVotes||0}</td><td style="color:green;font-weight:bold">${d.puk||0}</td><td>${d.pdk||0}</td><td>${d.gorran||0}</td><td>${d.kiu||0}</td><td>${d.neway||0}</td><td>${d.komal||0}</td><td>${d.baray||0}</td><td>${d.halwest||0}</td>`;
-    for(let i=1;i<=50;i++)t+=`<td>${d.candidates[i]||0}</td>`;
-    t+=`</tr>`;
+  if(!keys.length){alert('هیچ داتایەک نەدۆزرایەوە! تکایە سەرەتا کارمەندەکان داتا داخڵ بکەن.');return;}
+
+  // هەموو ستونەکان
+  const partyNames=['یەکێتی','پارتی','گۆڕان','یەکگرتوو','نەوەی نوێ','کۆمەڵ','بەرەی گەل','هەڵوێست','تر'];
+  const partyKeys =['puk','pdk','gorran','kiu','neway','komal','baray','halwest','other'];
+
+  // رەنگەکان بۆ هەر لایەنێک
+  const partyColors={puk:'#c6efce',pdk:'#ffeb9c',gorran:'#dce6f1',kiu:'#d9ead3',neway:'#fce4d6',komal:'#ededed',baray:'#e1d5e7',halwest:'#ffd7cc',other:'#f2f2f2'};
+
+  // زانیاری بازنەکان
+  const zoneNames={'1':'بازنەی ١ — ڕۆژهەڵات','2':'بازنەی ٢ — ڕۆژئاوا','3':'بازنەی ٣ — شۆڕش','4':'بازنەی ٤ — تەکیە'};
+
+  let rows=[];
+  keys.forEach(key=>{
+    const parts=key.split('_'); // zone_centerId_station
+    const zone=parts[0];
+    const centerId=parts[1];
+    const station=parts[2];
+    const d=db[key];
+    // بدۆزەرەوەی ناوی بنکە
+    let centerName=d.centerName||centerId;
+    let row={
+      zone: zoneNames[zone]||'—',
+      center: centerName,
+      station: 'وێستگەی '+station,
+      valid: parseInt(d.validVotes)||0,
+      invalid: parseInt(d.invalidVotes)||0,
+      total: (parseInt(d.validVotes)||0)+(parseInt(d.invalidVotes)||0),
+      candidates: d.candidates||{}
+    };
+    partyKeys.forEach(pk=>{ row[pk]=parseInt(d[pk])||0; });
+    rows.push(row);
   });
-  t+=`</table></body></html>`;
-  const b=new Blob(['\ufeff'+t],{type:'application/vnd.ms-excel;charset=utf-8'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='Report.xls';a.click();
-}
 
-/* ─── EXCEL (لێپرسراوی مەڵبەند) ─── */
-function exportDashboardExcel(){
-  const db = JSON.parse(localStorage.getItem('electionDB')) || {};
-  const keys = Object.keys(db);
-  if(!keys.length){alert('هیچ داتایەک بوونی نییە بۆ هێنانە دەرەوە!');return;}
-
-  const zoneNames = {
-    '1': 'بازنەی ١ — ڕۆژهەڵاتی چەمچەماڵ',
-    '2': 'بازنەی ٢ — ڕۆژئاوای چەمچەماڵ',
-    '3': 'بازنەی ٣ — شۆڕش',
-    '4': 'بازنەی ٤ — تەکیە و ئاغجەلەر'
-  };
-
-  let t = `<html dir="rtl"><head><meta charset="UTF-8"></head><body><table border="1">
-    <tr><th colspan="64" style="background:#0a0f1e;color:#00ffd5;text-align:center;font-size:18px;padding:10px;">راپۆرتی گشتی هه‌ڵبژاردنی سنوری مه‌ڵبه‌ندی 12ی ڕێكخستنی چه‌مچه‌مأڵ</th></tr>
-    <tr style="background:#ddd;font-weight:bold;">
-      <th>بازنە</th>
-      <th>ناوی بنکە</th>
-      <th>وێستگە</th>
-      <th>دروست</th>
-      <th>پوچەڵ</th>
-      <th>یەکێتی</th>
-      <th>پارتی</th>
-      <th>گۆڕان</th>
-      <th>یەکگرتوو</th>
-      <th>نەوەی نوێ</th>
-      <th>کۆمەڵ</th>
-      <th>بەرەی گەل</th>
-      <th>هەڵوێست</th>
-      <th>لایەنەکانی تر</th>`;
-  
-  for(let i=1;i<=50;i++) t += `<th>کاندیدی ${i}</th>`;
-  t += `</tr>`;
-
-  keys.forEach(k => {
-    const d = db[k];
-    const zoneId = k.split('_')[0];
-    const zoneName = zoneNames[zoneId] || 'نەناسراو';
-
-    t += `<tr>
-      <td>${zoneName}</td>
-      <td>${d.centerName || ''}</td>
-      <td>${d.stationNum || ''}</td>
-      <td>${d.validVotes || 0}</td>
-      <td>${d.invalidVotes || 0}</td>
-      <td style="color:green;font-weight:bold;">${d.puk || 0}</td>
-      <td>${d.pdk || 0}</td>
-      <td>${d.gorran || 0}</td>
-      <td>${d.kiu || 0}</td>
-      <td>${d.neway || 0}</td>
-      <td>${d.komal || 0}</td>
-      <td>${d.baray || 0}</td>
-      <td>${d.halwest || 0}</td>
-      <td>${d.other || 0}</td>`;
-      
-    for(let i=1;i<=50;i++) t += `<td>${d.candidates[i] || 0}</td>`;
-    t += `</tr>`;
+  // داتای گشتی
+  const totals={valid:0,invalid:0,total:0};
+  partyKeys.forEach(pk=>totals[pk]=0);
+  for(let i=1;i<=50;i++) totals['c'+i]=0;
+  rows.forEach(r=>{
+    totals.valid+=r.valid; totals.invalid+=r.invalid; totals.total+=r.total;
+    partyKeys.forEach(pk=>totals[pk]+=r[pk]);
+    for(let i=1;i<=50;i++) totals['c'+i]+=(parseInt(r.candidates[i])||0);
   });
-  
-  t += `</table></body></html>`;
 
-  const b = new Blob(['\ufeff' + t], {type: 'application/vnd.ms-excel;charset=utf-8'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(b);
-  a.download = 'راپۆرتی گشتی هه‌ڵبژاردنی سنوری مه‌ڵبه‌ندی 12ی ڕێكخستنی چه‌مچه‌مأڵ.xls';
+  // دروستکردنی Excel HTML
+  const hs='background:#1a472a;color:#fff;font-weight:bold;text-align:center;padding:8px;border:1px solid #ccc;';
+  const hs2='background:#2d6a4f;color:#fff;font-weight:bold;text-align:center;padding:6px;border:1px solid #ccc;';
+  const cs='padding:6px 8px;border:1px solid #ddd;text-align:center;';
+  const tot='background:#e8f5e9;font-weight:bold;padding:6px 8px;border:1px solid #a5d6a7;text-align:center;';
+
+  let html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head><meta charset="UTF-8">
+<style>
+  body{font-family:Arial;direction:rtl;}
+  table{border-collapse:collapse;width:100%;font-size:11px;}
+  th,td{border:1px solid #ccc;padding:5px 7px;}
+  .fz{font-size:13px;}
+  .hd1{background:#1a472a;color:#fff;font-weight:bold;text-align:center;}
+  .hd2{background:#2d6a4f;color:#fff;font-weight:bold;text-align:center;}
+  .hd3{background:#40916c;color:#fff;font-weight:bold;text-align:center;}
+  .puk{background:#c6efce;}
+  .pdk{background:#ffeb9c;}
+  .gorran{background:#dce6f1;}
+  .kiu{background:#d9ead3;}
+  .neway{background:#fce4d6;}
+  .komal{background:#ededed;}
+  .baray{background:#e1d5e7;}
+  .halwest{background:#ffd7cc;}
+  .other{background:#f2f2f2;}
+  .tot{background:#e8f5e9;font-weight:bold;}
+  .num{text-align:center;}
+  .zone1{background:#e3f2fd;} .zone2{background:#f3e5f5;} .zone3{background:#fff3e0;} .zone4{background:#fce4ec;}
+</style></head><body><table>`;
+
+  // سەرێکی گەورە
+  const totalCols=6+partyNames.length+50;
+  html+=`<tr><th colspan="${totalCols}" class="hd1 fz">📊 ڕاپۆرتی گشتی هەڵبژاردن — مەڵبەندی ١٢ی ڕێکخستنی چەمچەماڵ</th></tr>`;
+  html+=`<tr><th colspan="${totalCols}" class="hd2">کۆی وێستگەکان: ${rows.length} | سەرجەمی بەشداربووان: ${totals.total.toLocaleString()} | دەنگی دروست: ${totals.valid.toLocaleString()} | دەنگی یەکێتی: ${totals.puk.toLocaleString()}</th></tr>`;
+
+  // سەرستونەکان
+  html+=`<tr>
+    <th class="hd3">بازنە</th>
+    <th class="hd3">ناوی بنکە</th>
+    <th class="hd3">وێستگە</th>
+    <th class="hd3">دەنگی دروست</th>
+    <th class="hd3">دەنگی پووچەڵ</th>
+    <th class="hd3">کۆی گشتی</th>`;
+  partyNames.forEach((n,i)=>html+=`<th class="hd3 ${partyKeys[i]}">${n}</th>`);
+  for(let i=1;i<=50;i++) html+=`<th class="hd3">کاندیدی ${i}</th>`;
+  html+=`</tr>`;
+
+  // ڕیزەکان — بە رەنگی جیاواز بۆ هەر بازنەیەک
+  rows.forEach(r=>{
+    const zClass='zone'+(r.zone.includes('ڕۆژهەڵات')?'1':r.zone.includes('ڕۆژئاوا')?'2':r.zone.includes('شۆڕش')?'3':'4');
+    html+=`<tr>
+      <td class="${zClass} num">${r.zone}</td>
+      <td>${r.center}</td>
+      <td class="num">${r.station}</td>
+      <td class="num" style="color:green;font-weight:bold;">${r.valid}</td>
+      <td class="num" style="color:red;">${r.invalid}</td>
+      <td class="num" style="font-weight:bold;">${r.total}</td>`;
+    partyKeys.forEach(pk=>html+=`<td class="num ${pk}">${r[pk]}</td>`);
+    for(let i=1;i<=50;i++) html+=`<td class="num">${parseInt(r.candidates[i])||0}</td>`;
+    html+=`</tr>`;
+  });
+
+  // ڕیزی کۆی گشتی
+  html+=`<tr>
+    <td colspan="3" class="tot" style="text-align:center;">📌 کۆی گشتی هەموو وێستگەکان</td>
+    <td class="tot num" style="color:green;">${totals.valid}</td>
+    <td class="tot num" style="color:red;">${totals.invalid}</td>
+    <td class="tot num">${totals.total}</td>`;
+  partyKeys.forEach(pk=>html+=`<td class="tot num">${totals[pk]}</td>`);
+  for(let i=1;i<=50;i++) html+=`<td class="tot num">${totals['c'+i]}</td>`;
+  html+=`</tr></table></body></html>`;
+
+  const b=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download='ڕاپۆرتی_هەڵبژاردن_هەموو_بازنەکان.xls';
   a.click();
 }
 </script>
