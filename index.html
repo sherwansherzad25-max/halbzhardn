@@ -220,6 +220,9 @@ body::after{
 }
 .chip-green{border-color:rgba(0,255,213,.35);color:#00ffd5;background:rgba(0,255,213,.08);}
 .chip-red  {border-color:rgba(255,97,171,.35);color:#ff61ab;background:rgba(255,97,171,.08);}
+/* زیادکراو بۆ تایمەر */
+.chip-blue {border-color:rgba(97,201,255,.35);color:#61c9ff;background:rgba(97,201,255,.08);}
+
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
 .chip-red i{animation:blink 1.6s infinite;}
 
@@ -601,6 +604,18 @@ body::after{
 }
 .btn-dash-excel:hover{background:linear-gradient(135deg,rgba(0,230,118,.32),rgba(0,200,81,.2));color:#fff;border-color:rgba(0,230,118,.6);transform:translateY(-1px);}
 
+/* ── زیادکراو بۆ لیستی وێستگەکان ── */
+.station-status-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 12px; margin-bottom: 6px; border-radius: 8px;
+  background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.05);
+  font-size: .8rem; font-weight: 700; color: var(--text-mid);
+}
+.st-ok { border-left: 4px solid #00ffd5; background: rgba(0,255,213,.05); }
+.st-ok span { color: #00ffd5; }
+.st-bad { border-left: 4px solid #ff61ab; background: rgba(255,97,171,.05); }
+.st-bad span { color: #ff61ab; }
+
 @media(max-width:768px){
   .dash-body,.app-body .container{padding:14px;}
   .panels-row{gap:12px;}
@@ -643,7 +658,7 @@ body::after{
         <div id="loginError">زانیارییەکان هەڵەن، دوبارە هەوڵ بدە.</div>
         <button type="submit" class="btn-login"><i class="fas fa-sign-in-alt"></i> چوونەژوورەوە</button>
       </form>
-      <div class="login-foot">&copy; 2026 &nbsp;|&nbsp; دیزاین و دروستکردن: <strong>شیرزاد شیروان</strong></div>
+      <div class="login-foot">&copy; 2026 &nbsp;|&nbsp; دیزاین و دروستکردن: <strong>شیروان شێرزاد </strong></div>
     </div>
   </div>
 </div>
@@ -661,6 +676,9 @@ body::after{
         </div>
       </div>
       <div class="top-actions">
+        <!-- تایمەری لایڤ زیادکرا -->
+        <div class="chip chip-blue" id="liveTimerDisplay" style="animation-delay:.05s"><i class="fas fa-clock"></i> 00:00:00</div>
+        
         <div class="chip chip-green" style="animation-delay:.1s"><i class="fas fa-user-shield"></i> لێپرسراوی مەڵبەند</div>
         <div class="chip chip-red"   style="animation-delay:.2s"><i class="fas fa-satellite-dish"></i> لایڤ</div>
         <button class="btn-out" onclick="logout()"><i class="fas fa-sign-out-alt"></i> دەرچوون</button>
@@ -673,7 +691,7 @@ body::after{
     <!-- فلتەرەکان -->
     <div class="gc filter-bar" style="margin-bottom:18px;">
       <div class="row g-3 align-items-end">
-        <div class="col-md-3 col-sm-6">
+        <div class="col-md-2 col-sm-6">
           <div class="flabel">١ — بازنە</div>
           <select class="gsel" id="baznaSelect" onchange="updateCenters()">
             <option value="all">گشتی (هەموو بازنەکان)</option>
@@ -683,7 +701,7 @@ body::after{
             <option value="4">بازنەی ٤ — تەکیە و ئاغجەلەر</option>
           </select>
         </div>
-        <div class="col-md-3 col-sm-6">
+        <div class="col-md-2 col-sm-6">
           <div class="flabel">٢ — بنکە</div>
           <select class="gsel" id="binkaSelect" onchange="updateStations()">
             <option value="all">گشتی</option>
@@ -691,7 +709,10 @@ body::after{
         </div>
         <div class="col-md-2 col-sm-4">
           <div class="flabel">٣ — وێستگە</div>
-          <select class="gsel" id="westgaSelect"><option value="all">گشتی</option></select>
+          <!-- لێرەدا فەرمانی گۆڕانکاریمان زیاد کرد بۆ وێستگەش -->
+          <select class="gsel" id="westgaSelect" onchange="updateDashboardFromLocal()">
+            <option value="all">گشتی</option>
+          </select>
         </div>
         <div class="col-md-2 col-sm-4">
           <div class="flabel" style="color:var(--aurora1);">گەڕان بۆ کاندید</div>
@@ -700,12 +721,30 @@ body::after{
             <input type="text" class="ginput" style="padding-right:36px!important;" placeholder="نموونە: 15 یان 1-5" id="candidateSearch" oninput="renderCandidates()">
           </div>
         </div>
-        <div class="col-md-2 col-sm-4">
-          <div class="flabel" style="color:#69ffa8;">دانەبەرانی ئێکسڵ</div>
-          <button class="btn-dash-excel" onclick="exportDashboardExcel()">
-            <i class="fas fa-file-excel"></i> دابەزاندنی Excel
-          </button>
+        
+        <!-- بەشی پاراستنی داتا و دابەزاندن -->
+        <div class="col-md-4 col-sm-8" style="display:flex; gap:8px;">
+          <div style="flex:1;">
+            <div class="flabel" style="color:#69ffa8;">ڕاپۆرتی گشتی</div>
+            <button class="btn-dash-excel" onclick="exportDashboardExcel()">
+              <i class="fas fa-file-excel"></i> دابەزاندنی Excel
+            </button>
+          </div>
+          <div style="flex:1;">
+            <div class="flabel" style="color:#ff61ab;">پاراستنی داتا (Backup)</div>
+            <button class="btn-dash-excel" style="background:rgba(255,97,171,.1); color:#ff61ab; border-color:rgba(255,97,171,.3);" onclick="exportBackupJSON()">
+              <i class="fas fa-download"></i> وەرگرتنی فایل
+            </button>
+          </div>
+          <div style="flex:1;">
+            <div class="flabel" style="color:#61c9ff;">گێڕانەوەی داتا</div>
+            <button class="btn-dash-excel" style="background:rgba(97,201,255,.1); color:#61c9ff; border-color:rgba(97,201,255,.3);" onclick="document.getElementById('importJsonFile').click()">
+              <i class="fas fa-upload"></i> هێنانەوە
+            </button>
+            <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importBackupJSON(event)">
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -749,9 +788,20 @@ body::after{
       </div>
     </div>
 
+    <!-- بینینی ڕەوشی وێستگەکان (هاتوو یان نەهاتوو) -->
+    <div class="gc panel mt-3">
+      <div class="panel-hd">
+        <div class="panel-hd-ico" style="background:rgba(0,255,213,.18);color:#00ffd5;"><i class="fas fa-tasks"></i></div>
+        <div class="panel-hd-title">ڕەوشی هاتنی داتای وێستگەکان (✅ و ❌)</div>
+      </div>
+      <div class="panel-body p-3" id="stationsStatusContainer" style="max-height:300px; overflow-y:auto;">
+        <!-- لە ڕێگەی جاڤاسکریپتەوە پڕ دەکرێتەوە -->
+      </div>
+    </div>
+
     <div class="dash-foot">
       <i class="fas fa-code me-1"></i>
-      دیزاین و دروستکردن: <strong>شیرزاد شیروان</strong> &nbsp;|&nbsp; بەشی ئایتی مەڵبەندی ١٢ &nbsp;|&nbsp; &copy; 2026
+      دیزاین و دروستکردن: <strong>شیروان شیرزاد </strong> &nbsp;|&nbsp; بەشی ئایتی مەڵبەندی ١٢ &nbsp;|&nbsp; &copy; 2026
     </div>
   </div>
 </div>
@@ -842,11 +892,11 @@ body::after{
           <div class="err-bar" id="fPartyError"><i class="fas fa-exclamation-triangle me-2"></i> ئاگاداربە: کۆی لایەنەکان زیاترە لە دەنگی دروست!</div>
           <div class="pgrid">
             <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#00ffd5;"></span> یەکێتی نیشتمانی (١٢٩)</div>
+              <div class="plabel-form"><span class="pdot" style="background:#00ffd5;"></span> یەکێتی نیشتمانی كوردستان</div>
               <input type="number" class="ainput pi-puk formClearable" id="fPukVotes" oninput="checkFormTotals()">
             </div>
             <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#ffab00;"></span> پارتی دیموکرات (١٩٠)</div>
+              <div class="plabel-form"><span class="pdot" style="background:#ffab00;"></span> پارتی دیموکراتی كوردستان </div>
               <input type="number" class="ainput pi-pdk formClearable" id="fPdkVotes" oninput="checkFormTotals()">
             </div>
             <div class="prow-form">
@@ -907,7 +957,7 @@ body::after{
       </button>
     </div>
     <div class="dash-foot no-print">
-      <i class="fas fa-code me-1"></i> دیزاین: <strong>شیرزاد شیروان</strong> &nbsp;|&nbsp; بەشی ئایتی مەڵبەندی ١٢ &nbsp;|&nbsp; &copy; 2026
+      <i class="fas fa-code me-1"></i> دیزاین: <strong> شیروان شیرزاد</strong> &nbsp;|&nbsp; بەشی ئایتی مەڵبەندی ١٢ &nbsp;|&nbsp; &copy; 2026
     </div>
   </div>
   </div>
@@ -1004,7 +1054,7 @@ const RBAC_USERS={
 };
 let currentUser=null;
 
-/* ─── LOGIN ─── */
+/* ─── LOGIN & DASHBOARD CONNECTIONS ─── */
 function attemptLogin(){
   const u=document.getElementById('username').value.trim();
   const p=document.getElementById('password').value;
@@ -1015,7 +1065,8 @@ function attemptLogin(){
     currentUser=RBAC_USERS[u];
     if(currentUser.role==='dashboard'){
       document.getElementById('dashboard-section').style.display='block';
-      renderParties(); renderCandidates();
+      updateDashboardFromLocal();
+      startLiveTimer(); 
     } else {
       document.getElementById('app-section').style.display='block';
       setupFormAccess(currentUser);
@@ -1023,6 +1074,128 @@ function attemptLogin(){
   } else { e.style.display='block'; }
 }
 function logout(){ if(confirm('دەتەوێت دەربچیت؟')) location.reload(); }
+
+/* ── تایمەری زیندوو ── */
+function startLiveTimer() {
+  setInterval(() => {
+    const now = new Date();
+    document.getElementById('liveTimerDisplay').innerHTML = `<i class="fas fa-clock"></i> ${now.toLocaleTimeString('en-US', {hour12: false})}`;
+  }, 1000);
+}
+
+/* ── پێشکەوتوو: پاراستن و پاڵاوتنی (فلتەرکردنی) داتاکان بەپێی هەڵبژاردن ── */
+function updateDashboardFromLocal() {
+    let localDB = JSON.parse(localStorage.getItem('electionDB')) || {};
+    let keys = Object.keys(localDB);
+
+    // هێنانی بەهاکانی فلتەرەکان
+    let selZone = document.getElementById('baznaSelect').value;
+    let selCenter = document.getElementById('binkaSelect').value;
+    let selStation = document.getElementById('westgaSelect').value;
+
+    let totalValid = 0, totalInvalid = 0, totalPuk = 0;
+    partiesData.forEach(p => p.votes = 0);
+    candidatesData.forEach(c => c.votes = 0);
+
+    keys.forEach(key => {
+        let parts = key.split('_'); // zone_centerId_station
+        let kZone = parts[0];
+        let kCenter = parts[1];
+        let kStation = parts[2];
+
+        // مەرجەکانی فلتەرکردن (ئەگەر گشتی نەبوو و یەکسان نەبوو بە هەڵبژێردراوەکە، بەسەریدا بپەڕەوە)
+        if (selZone !== 'all' && kZone !== selZone) return;
+        if (selCenter !== 'all' && kCenter !== selCenter) return;
+        if (selStation !== 'all' && kStation !== selStation) return;
+
+        let d = localDB[key];
+        totalValid += parseInt(d.validVotes) || 0;
+        totalInvalid += parseInt(d.invalidVotes) || 0;
+        totalPuk += parseInt(d.puk) || 0;
+
+        let partyMap = {
+            "یەکێتی نیشتمانی": d.puk, "پارتی دیموکرات": d.pdk, "بزووتنەوەی گۆڕان": d.gorran,
+            "یەکگرتووی ئیسلامی": d.kiu, "نەوەی نوێ": d.neway, "کۆمەڵی دادگەری": d.komal,
+            "بەرەی گەل": d.baray, "ڕەوتی هەڵوێست": d.halwest, "لایەنەکانی تر": d.other
+        };
+        partiesData.forEach(p => { p.votes += parseInt(partyMap[p.name]) || 0; });
+
+        for (let i = 1; i <= 50; i++) {
+            let candVote = parseInt(d.candidates[i]) || 0;
+            let candObj = candidatesData.find(c => c.num === i);
+            if (candObj) candObj.votes += candVote;
+        }
+    });
+
+    document.getElementById('totalVoters').innerText = (totalValid + totalInvalid).toLocaleString();
+    document.getElementById('validVotesDash').innerText = totalValid.toLocaleString();
+    document.getElementById('invalidVotesDash').innerText = totalInvalid.toLocaleString();
+    document.getElementById('pukVotesDash').innerText = totalPuk.toLocaleString();
+
+    renderParties();
+    renderCandidates();
+    renderStationsStatus(localDB, selZone, selCenter, selStation); 
+}
+
+/* ── لیستی ڕەوشی وێستگەکان بە فلتەرکراوی ── */
+function renderStationsStatus(localDB, selZone, selCenter, selStation) {
+    let container = document.getElementById('stationsStatusContainer');
+    let html = '';
+    
+    for (let zone in electionData) {
+        if (selZone !== 'all' && zone !== selZone) continue; // فلتەری بازنە
+
+        electionData[zone].forEach(center => {
+            if (selCenter !== 'all' && center.id !== selCenter) return; // فلتەری بنکە
+
+            for (let i = 1; i <= center.stations; i++) {
+                if (selStation !== 'all' && i.toString() !== selStation) continue; // فلتەری وێستگە
+
+                let key = `${zone}_${center.id}_${i}`;
+                if (localDB[key]) {
+                    html += `<div class="station-status-row st-ok">
+                                <div>بازنەی ${zone} — ${center.name} — وێستگەی ${i}</div>
+                                <span><i class="fas fa-check-circle"></i> تۆمارکراوە</span>
+                             </div>`;
+                } else {
+                    html += `<div class="station-status-row st-bad">
+                                <div>بازنەی ${zone} — ${center.name} — وێستگەی ${i}</div>
+                                <span><i class="fas fa-times-circle"></i> هێشتا نەنووسراوە</span>
+                             </div>`;
+                }
+            }
+        });
+    }
+    container.innerHTML = html || '<div style="text-align:center; color:gray; font-size:0.85rem; padding:10px;">هیچ وێستگەیەک نەدۆزرایەوە بۆ ئەم فلتەرە.</div>';
+}
+
+/* ── پاراستنی داتا (Backup JSON) ── */
+function exportBackupJSON() {
+    const db = localStorage.getItem('electionDB');
+    if (!db) { alert("هیچ داتایەک نییە بۆ پاراستن!"); return; }
+    const blob = new Blob([db], { type: "application/json" });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `Election_Backup_${new Date().getTime()}.json`;
+    a.click();
+}
+
+function importBackupJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const json = JSON.parse(e.target.result);
+            localStorage.setItem('electionDB', JSON.stringify(json));
+            alert("داتاکان بە سەرکەوتوویی هێنرانەوە!");
+            updateDashboardFromLocal();
+        } catch (err) {
+            alert("فایلەکە هەڵەیە یان نەخوێندراوەتەوە.");
+        }
+    };
+    reader.readAsText(file);
+}
 
 /* ─── DASHBOARD FILTERS ─── */
 function updateCenters(){
@@ -1032,6 +1205,8 @@ function updateCenters(){
   bs.innerHTML='<option value="all">گشتی</option>';
   ws.innerHTML='<option value="all">گشتی</option>';
   if(b!=='all'&&electionData[b]) electionData[b].forEach(c=>bs.innerHTML+=`<option value="${c.id}" data-stations="${c.stations}">${c.name}</option>`);
+  
+  updateDashboardFromLocal(); // نوێکردنەوەی داتاکان کاتی گۆڕینی بازنە
 }
 function updateStations(){
   const sel=document.getElementById('binkaSelect');
@@ -1042,6 +1217,8 @@ function updateStations(){
     const cnt=parseInt(opt.getAttribute('data-stations'))||0;
     for(let i=1;i<=cnt;i++) ws.innerHTML+=`<option value="${i}">وێستگەی ${i}</option>`;
   }
+
+  updateDashboardFromLocal(); // نوێکردنەوەی داتاکان کاتی گۆڕینی بنکە
 }
 
 /* ─── DASHBOARD RENDER ─── */
@@ -1196,16 +1373,22 @@ function checkFormCandidates(){
   document.getElementById('fCandidateError').style.display=tc>puk?'block':'none';
 }
 
-/* ─── MODAL ─── */
+/* ─── MODAL (زیادکردنی ئاگادارکردنەوەی زیاتر) ─── */
 function showReviewModal(){
   const valid=v('fValidVotes'),invalid=v('fInvalidVotes'),puk=v('fPukVotes');
   const ps=puk+v('fPdkVotes')+v('fGorranVotes')+v('fKiuVotes')+v('fNewayVotes')+v('fKomalVotes')+v('fBarayVotes')+v('fHalwestVotes')+v('fOtherVotes');
   const cs=parseInt(document.getElementById('fTotalCandidateVotes').innerText)||0;
   const cs2=document.getElementById('formCenterSelect');
   const st=document.getElementById('formStationSelect').value;
+  
   if(!cs2.value||!st){alert('تکایە سەرەتا بنکە و وێستگە دیاری بکە!');return;}
+  if(valid === 0 && invalid === 0){alert('تکایە دڵنیابە فۆڕمەکەت بەتاڵ نییە پێش ناردن!');return;}
   if(ps>valid){alert('تکایە هەڵەی ژمارەی لایەنەکان چاک بکە!');return;}
   if(cs>puk){alert('تکایە هەڵەی ژمارەی کاندیدەکان چاک بکە!');return;}
+  if(puk>0 && cs===0){
+      if(!confirm('ئاگاداربە: دەنگی یەکێتیت نووسیوە بەڵام هیچ دەنگێکت بۆ کاندیدەکان نەنووسیوە. دەتەوێت بەردەوام بیت؟')) return;
+  }
+  
   document.getElementById('modalCenter').innerText=cs2.options[cs2.selectedIndex].text;
   document.getElementById('modalStation').innerText=st;
   document.getElementById('modalTotal').innerText=valid+invalid;
@@ -1213,6 +1396,7 @@ function showReviewModal(){
   document.getElementById('modalPuk').innerText=puk;
   document.getElementById('reviewModal').style.display='flex';
 }
+
 function closeModal(){document.getElementById('reviewModal').style.display='none';}
 function confirmSave(){
   closeModal();
@@ -1229,30 +1413,23 @@ function confirmSave(){
   onStationChange();
 }
 
-/* ─── DASHBOARD EXCEL EXPORT (پیشرفتە) ─── */
+/* ─── DASHBOARD EXCEL EXPORT ─── */
 function exportDashboardExcel(){
   const db=JSON.parse(localStorage.getItem('electionDB'))||{};
   const keys=Object.keys(db);
   if(!keys.length){alert('هیچ داتایەک نەدۆزرایەوە! تکایە سەرەتا کارمەندەکان داتا داخڵ بکەن.');return;}
 
-  // هەموو ستونەکان
   const partyNames=['یەکێتی','پارتی','گۆڕان','یەکگرتوو','نەوەی نوێ','کۆمەڵ','بەرەی گەل','هەڵوێست','تر'];
   const partyKeys =['puk','pdk','gorran','kiu','neway','komal','baray','halwest','other'];
-
-  // رەنگەکان بۆ هەر لایەنێک
-  const partyColors={puk:'#c6efce',pdk:'#ffeb9c',gorran:'#dce6f1',kiu:'#d9ead3',neway:'#fce4d6',komal:'#ededed',baray:'#e1d5e7',halwest:'#ffd7cc',other:'#f2f2f2'};
-
-  // زانیاری بازنەکان
   const zoneNames={'1':'بازنەی ١ — ڕۆژهەڵات','2':'بازنەی ٢ — ڕۆژئاوا','3':'بازنەی ٣ — شۆڕش','4':'بازنەی ٤ — تەکیە'};
 
   let rows=[];
   keys.forEach(key=>{
-    const parts=key.split('_'); // zone_centerId_station
+    const parts=key.split('_'); 
     const zone=parts[0];
     const centerId=parts[1];
     const station=parts[2];
     const d=db[key];
-    // بدۆزەرەوەی ناوی بنکە
     let centerName=d.centerName||centerId;
     let row={
       zone: zoneNames[zone]||'—',
@@ -1267,7 +1444,6 @@ function exportDashboardExcel(){
     rows.push(row);
   });
 
-  // داتای گشتی
   const totals={valid:0,invalid:0,total:0};
   partyKeys.forEach(pk=>totals[pk]=0);
   for(let i=1;i<=50;i++) totals['c'+i]=0;
@@ -1277,74 +1453,23 @@ function exportDashboardExcel(){
     for(let i=1;i<=50;i++) totals['c'+i]+=(parseInt(r.candidates[i])||0);
   });
 
-  // دروستکردنی Excel HTML
-  const hs='background:#1a472a;color:#fff;font-weight:bold;text-align:center;padding:8px;border:1px solid #ccc;';
-  const hs2='background:#2d6a4f;color:#fff;font-weight:bold;text-align:center;padding:6px;border:1px solid #ccc;';
-  const cs='padding:6px 8px;border:1px solid #ddd;text-align:center;';
-  const tot='background:#e8f5e9;font-weight:bold;padding:6px 8px;border:1px solid #a5d6a7;text-align:center;';
-
-  let html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel">
-<head><meta charset="UTF-8">
-<style>
-  body{font-family:Arial;direction:rtl;}
-  table{border-collapse:collapse;width:100%;font-size:11px;}
-  th,td{border:1px solid #ccc;padding:5px 7px;}
-  .fz{font-size:13px;}
-  .hd1{background:#1a472a;color:#fff;font-weight:bold;text-align:center;}
-  .hd2{background:#2d6a4f;color:#fff;font-weight:bold;text-align:center;}
-  .hd3{background:#40916c;color:#fff;font-weight:bold;text-align:center;}
-  .puk{background:#c6efce;}
-  .pdk{background:#ffeb9c;}
-  .gorran{background:#dce6f1;}
-  .kiu{background:#d9ead3;}
-  .neway{background:#fce4d6;}
-  .komal{background:#ededed;}
-  .baray{background:#e1d5e7;}
-  .halwest{background:#ffd7cc;}
-  .other{background:#f2f2f2;}
-  .tot{background:#e8f5e9;font-weight:bold;}
-  .num{text-align:center;}
-  .zone1{background:#e3f2fd;} .zone2{background:#f3e5f5;} .zone3{background:#fff3e0;} .zone4{background:#fce4ec;}
-</style></head><body><table>`;
-
-  // سەرێکی گەورە
   const totalCols=6+partyNames.length+50;
+  let html=`<html xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="UTF-8"><style>body{font-family:Arial;direction:rtl;}table{border-collapse:collapse;width:100%;font-size:11px;}th,td{border:1px solid #ccc;padding:5px 7px;}.fz{font-size:13px;}.hd1{background:#1a472a;color:#fff;font-weight:bold;text-align:center;}.hd2{background:#2d6a4f;color:#fff;font-weight:bold;text-align:center;}.hd3{background:#40916c;color:#fff;font-weight:bold;text-align:center;}.tot{background:#e8f5e9;font-weight:bold;}.num{text-align:center;}.zone1{background:#e3f2fd;}.zone2{background:#f3e5f5;}.zone3{background:#fff3e0;}.zone4{background:#fce4ec;}</style></head><body><table>`;
   html+=`<tr><th colspan="${totalCols}" class="hd1 fz">📊 ڕاپۆرتی گشتی هەڵبژاردن — مەڵبەندی ١٢ی ڕێکخستنی چەمچەماڵ</th></tr>`;
-  html+=`<tr><th colspan="${totalCols}" class="hd2">کۆی وێستگەکان: ${rows.length} | سەرجەمی بەشداربووان: ${totals.total.toLocaleString()} | دەنگی دروست: ${totals.valid.toLocaleString()} | دەنگی یەکێتی: ${totals.puk.toLocaleString()}</th></tr>`;
-
-  // سەرستونەکان
-  html+=`<tr>
-    <th class="hd3">بازنە</th>
-    <th class="hd3">ناوی بنکە</th>
-    <th class="hd3">وێستگە</th>
-    <th class="hd3">دەنگی دروست</th>
-    <th class="hd3">دەنگی پووچەڵ</th>
-    <th class="hd3">کۆی گشتی</th>`;
+  html+=`<tr><th colspan="${totalCols}" class="hd2">کۆی وێستگەکان: ${rows.length} | سەرجەمی بەشداربووان: ${totals.total.toLocaleString()} | دەنگی دروست: ${totals.valid.toLocaleString()} | دەنگی یەکێتی: ${totals.puk.toLocaleString()}</th></tr><tr><th class="hd3">بازنە</th><th class="hd3">ناوی بنکە</th><th class="hd3">وێستگە</th><th class="hd3">دەنگی دروست</th><th class="hd3">دەنگی پووچەڵ</th><th class="hd3">کۆی گشتی</th>`;
   partyNames.forEach((n,i)=>html+=`<th class="hd3 ${partyKeys[i]}">${n}</th>`);
   for(let i=1;i<=50;i++) html+=`<th class="hd3">کاندیدی ${i}</th>`;
   html+=`</tr>`;
 
-  // ڕیزەکان — بە رەنگی جیاواز بۆ هەر بازنەیەک
   rows.forEach(r=>{
     const zClass='zone'+(r.zone.includes('ڕۆژهەڵات')?'1':r.zone.includes('ڕۆژئاوا')?'2':r.zone.includes('شۆڕش')?'3':'4');
-    html+=`<tr>
-      <td class="${zClass} num">${r.zone}</td>
-      <td>${r.center}</td>
-      <td class="num">${r.station}</td>
-      <td class="num" style="color:green;font-weight:bold;">${r.valid}</td>
-      <td class="num" style="color:red;">${r.invalid}</td>
-      <td class="num" style="font-weight:bold;">${r.total}</td>`;
+    html+=`<tr><td class="${zClass} num">${r.zone}</td><td>${r.center}</td><td class="num">${r.station}</td><td class="num" style="color:green;font-weight:bold;">${r.valid}</td><td class="num" style="color:red;">${r.invalid}</td><td class="num" style="font-weight:bold;">${r.total}</td>`;
     partyKeys.forEach(pk=>html+=`<td class="num ${pk}">${r[pk]}</td>`);
     for(let i=1;i<=50;i++) html+=`<td class="num">${parseInt(r.candidates[i])||0}</td>`;
     html+=`</tr>`;
   });
 
-  // ڕیزی کۆی گشتی
-  html+=`<tr>
-    <td colspan="3" class="tot" style="text-align:center;">📌 کۆی گشتی هەموو وێستگەکان</td>
-    <td class="tot num" style="color:green;">${totals.valid}</td>
-    <td class="tot num" style="color:red;">${totals.invalid}</td>
-    <td class="tot num">${totals.total}</td>`;
+  html+=`<tr><td colspan="3" class="tot" style="text-align:center;">📌 کۆی گشتی هەموو وێستگەکان</td><td class="tot num" style="color:green;">${totals.valid}</td><td class="tot num" style="color:red;">${totals.invalid}</td><td class="tot num">${totals.total}</td>`;
   partyKeys.forEach(pk=>html+=`<td class="tot num">${totals[pk]}</td>`);
   for(let i=1;i<=50;i++) html+=`<td class="tot num">${totals['c'+i]}</td>`;
   html+=`</tr></table></body></html>`;
@@ -1352,8 +1477,17 @@ function exportDashboardExcel(){
   const b=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
   const a=document.createElement('a');
   a.href=URL.createObjectURL(b);
-  a.download='ڕاپۆرتی_هەڵبژاردن_هەموو_بازنەکان.xls';
+  a.download='ڕاپۆرتی_هەڵبژاردن.xls';
   a.click();
+}
+
+/* ── تۆمارکردنی Service Worker بۆ PWA ── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(err => {
+        console.log('Service Worker تۆمار نەکرا:', err);
+    });
+  });
 }
 </script>
 </body>
