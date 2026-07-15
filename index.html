@@ -62,9 +62,7 @@
         </div>
       </div>
       <div class="top-actions">
-        <!-- تایمەری لایڤ زیادکرا -->
         <div class="chip chip-blue" id="liveTimerDisplay" style="animation-delay:.05s"><i class="fas fa-clock"></i> 00:00:00</div>
-        
         <div class="chip chip-green" style="animation-delay:.1s"><i class="fas fa-user-shield"></i> لێپرسراوی مەڵبەند</div>
         <div class="chip chip-red"   style="animation-delay:.2s"><i class="fas fa-satellite-dish"></i> لایڤ</div>
         <button class="btn-out" onclick="logout()"><i class="fas fa-sign-out-alt"></i> دەرچوون</button>
@@ -74,10 +72,17 @@
 
   <div class="dash-body container-fluid">
 
+    <!-- دوگمەکانی گۆڕینی جۆری هەڵبژاردن -->
+    <div class="switch-group">
+      <button class="sw-btn active-general" id="sw-general" onclick="changeElectionMode('general')"><i class="fas fa-users"></i> دەنگدانی گشتی</button>
+      <button class="sw-btn" id="sw-special" onclick="changeElectionMode('special')"><i class="fas fa-user-shield"></i> دەنگدانی تایبەت</button>
+      <button class="sw-btn" id="sw-both" onclick="changeElectionMode('both')"><i class="fas fa-chart-pie"></i> دەنگدانی گشتی + دەنگدانی تایبەت</button>
+    </div>
+
     <!-- فلتەرەکان -->
     <div class="gc filter-bar" style="margin-bottom:18px;">
       <div class="row g-3 align-items-end">
-        <div class="col-md-2 col-sm-6">
+        <div class="col-md-3 col-sm-6">
           <div class="flabel">١ — بازنە</div>
           <select class="gsel" id="baznaSelect" onchange="updateCenters()">
             <option value="all">گشتی (هەموو بازنەکان)</option>
@@ -87,7 +92,7 @@
             <option value="4">بازنەی ٤ — تەکیە و ئاغجەلەر</option>
           </select>
         </div>
-        <div class="col-md-2 col-sm-6">
+        <div class="col-md-3 col-sm-6">
           <div class="flabel">٢ — بنکە</div>
           <select class="gsel" id="binkaSelect" onchange="updateStations()">
             <option value="all">گشتی</option>
@@ -107,29 +112,13 @@
           </div>
         </div>
         
-        <!-- بەشی پاراستنی داتا و دابەزاندن -->
-        <div class="col-md-4 col-sm-8" style="display:flex; gap:8px;">
-          <div style="flex:1;">
+        <!-- بەشی ڕاپۆرتی ئێکسڵ (لادانی پاراستنی داتا) -->
+        <div class="col-md-2 col-sm-4">
             <div class="flabel" style="color:#69ffa8;">ڕاپۆرتی گشتی</div>
             <button class="btn-dash-excel" onclick="exportDashboardExcel()">
               <i class="fas fa-file-excel"></i> دابەزاندنی Excel
             </button>
-          </div>
-          <div style="flex:1;">
-            <div class="flabel" style="color:#ff61ab;">پاراستنی داتا (Backup)</div>
-            <button class="btn-dash-excel" style="background:rgba(255,97,171,.1); color:#ff61ab; border-color:rgba(255,97,171,.3);" onclick="exportBackupJSON()">
-              <i class="fas fa-download"></i> وەرگرتنی فایل
-            </button>
-          </div>
-          <div style="flex:1;">
-            <div class="flabel" style="color:#61c9ff;">گێڕانەوەی داتا</div>
-            <button class="btn-dash-excel" style="background:rgba(97,201,255,.1); color:#61c9ff; border-color:rgba(97,201,255,.3);" onclick="document.getElementById('importJsonFile').click()">
-              <i class="fas fa-upload"></i> هێنانەوە
-            </button>
-            <input type="file" id="importJsonFile" style="display:none" accept=".json" onchange="importBackupJSON(event)">
-          </div>
         </div>
-
       </div>
     </div>
 
@@ -180,7 +169,6 @@
         <div class="panel-hd-title">ڕەوشی هاتنی داتای وێستگەکان (✅ و ❌)</div>
       </div>
       <div class="panel-body p-3" id="stationsStatusContainer" style="max-height:300px; overflow-y:auto;">
-        <!-- لە ڕێگەی جاڤاسکریپتەوە پڕ دەکرێتەوە -->
       </div>
     </div>
 
@@ -211,10 +199,23 @@
 
     <div class="action-bar no-print">
       <button class="btn-act btn-act-p" onclick="window.print()"><i class="fas fa-print"></i> پرینتکردن</button>
-      <button class="btn-act btn-act-g" onclick="exportAdvancedExcel()"><i class="fas fa-file-excel"></i> Excel</button>
     </div>
 
     <div id="printable-area">
+
+      <!-- دوگمەی گۆڕینی فۆڕم بۆ کارمەند -->
+      <div class="gc fc no-print">
+        <div class="fc-head" style="background:rgba(0,0,0,0.2);">
+          <div class="fc-ico"><i class="fas fa-vote-yea"></i></div>
+          جۆری هەڵبژاردن دیاری بکە
+        </div>
+        <div class="fc-body">
+          <div class="switch-group" style="margin-bottom:0;">
+             <button class="sw-btn active-general" id="fsw-general" onclick="changeFormMode('general')"><i class="fas fa-users"></i> دەنگدانی گشتی</button>
+             <button class="sw-btn" id="fsw-special" onclick="changeFormMode('special')"><i class="fas fa-user-shield"></i> دەنگدانی تایبەت</button>
+          </div>
+        </div>
+      </div>
 
       <!-- 1 جوگرافی -->
       <div class="gc fc">
@@ -367,11 +368,8 @@
   </div>
 </div>
 
-<!-- هێنانە ناوەوەی کتێبخانەکانی فایربەیس -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
-<!-- بەستنەوەی فایلی جاڤاسکریپت -->
 <script src="script.js"></script>
 
 </body>
