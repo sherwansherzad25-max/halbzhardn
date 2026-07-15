@@ -73,12 +73,11 @@ body::after{
   opacity:0.03;
 }
 
-/* ─── ALL SECTIONS ─── */
 #login-section,#dashboard-section,#app-section{position:relative;z-index:2;}
 #dashboard-section,#app-section{display:none;}
 
 /* ══════════════════════════════════════
-   LOGIN (وەک کۆدی کۆن — بازنە خۆیەکان)
+   LOGIN
 ══════════════════════════════════════ */
 @keyframes loginRotate  { from{transform:rotate(0deg)}   to{transform:rotate(360deg)}  }
 @keyframes loginRotate2 { from{transform:rotate(360deg)} to{transform:rotate(0deg)}    }
@@ -170,7 +169,7 @@ body::after{
 
 
 /* ══════════════════════════════════════
-   SHARED HEADER
+   SHARED HEADER & SWITCH BUTTONS
 ══════════════════════════════════════ */
 @keyframes slideDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes slideUp  {from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
@@ -210,7 +209,6 @@ body::after{
 }
 .chip-green{border-color:rgba(0,255,213,.35);color:#00ffd5;background:rgba(0,255,213,.08);}
 .chip-red  {border-color:rgba(255,97,171,.35);color:#ff61ab;background:rgba(255,97,171,.08);}
-/* زیادکراو بۆ تایمەر */
 .chip-blue {border-color:rgba(97,201,255,.35);color:#61c9ff;background:rgba(97,201,255,.08);}
 
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
@@ -224,6 +222,21 @@ body::after{
   font-family:'Noto Sans Arabic',sans-serif;
 }
 .btn-out:hover{background:rgba(255,97,171,.25);color:#fff;border-color:rgba(255,97,171,.6);}
+
+/* گۆڕینی دوگمەکان */
+.switch-group {
+  display: flex; gap: 8px; background: rgba(0,0,0,0.2); padding: 6px; 
+  border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--glass-border); flex-wrap: wrap;
+}
+.sw-btn {
+  flex: 1; padding: 11px 15px; border: none; border-radius: 8px; background: transparent; 
+  color: var(--text-mid); font-family: 'Noto Sans Arabic', sans-serif; font-size: .85rem; 
+  font-weight: 800; cursor: pointer; transition: all .3s; text-align: center;
+}
+.sw-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.sw-btn.active-general { background: rgba(0, 255, 213, 0.15); color: #00ffd5; border: 1px solid rgba(0, 255, 213, 0.3); }
+.sw-btn.active-special { background: rgba(255, 171, 0, 0.15); color: #ffab00; border: 1px solid rgba(255, 171, 0, 0.3); }
+.sw-btn.active-both    { background: rgba(123, 97, 255, 0.15); color: #b39dff; border: 1px solid rgba(123, 97, 255, 0.3); }
 
 /* ══════════════════════════════════════
    GLASS CARD
@@ -247,7 +260,24 @@ body::after{
 
 /* ── FILTER BAR ── */
 .filter-bar{padding:18px 20px;margin-bottom:20px;}
-.flabel{font-size:.7rem;font-weight:800;color:var(--text-dim);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px;}
+
+/* گۆڕانکارییەکەی تۆ بۆ ڕەنگی سپی و دیارکردنی نووسینەکان */
+.flabel {
+  font-size: .8rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  margin-bottom: 7px;
+}
+.scard-lbl {
+  font-size: .8rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: .04em;
+  margin-bottom: 5px;
+}
+
 .gsel,.ginput{
   width:100%;
   background:rgba(255,255,255,.05) !important;
@@ -292,8 +322,6 @@ body::after{
 .ico-n{ background:rgba(255,97,171,.12);color:#ff61ab; }
 .ico-p{ background:rgba(97,201,255,.12);color:#61c9ff; }
 
-.scard-txt{}
-.scard-lbl{font-size:.7rem;font-weight:700;color:var(--text-dim);letter-spacing:.04em;margin-bottom:5px;}
 .scard-val{font-size:1.75rem;font-weight:900;color:var(--text-bright);line-height:1;letter-spacing:-.02em;}
 .scard.gc-glow .scard-val{color:var(--aurora1);}
 
@@ -372,8 +400,6 @@ body::after{
 }
 .btn-act-p{background:rgba(123,97,255,.18);color:#b39dff;border:1px solid rgba(123,97,255,.3);}
 .btn-act-p:hover{background:rgba(123,97,255,.32);color:#fff;}
-.btn-act-g{background:rgba(0,255,213,.12);color:var(--aurora1);border:1px solid rgba(0,255,213,.25);}
-.btn-act-g:hover{background:rgba(0,255,213,.24);color:#fff;}
 
 /* form cards */
 .fc{margin-bottom:14px;overflow:hidden;animation:slideUp .4s ease both;}
@@ -452,7 +478,6 @@ body::after{
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 @media(max-width:600px){.pgrid{grid-template-columns:1fr;}}
 .pgrid-full{grid-column:1/-1;}
-.prow-form{}
 .plabel-form{
   display:flex;align-items:center;gap:7px;
   font-size:.74rem;font-weight:800;color:var(--text-mid);margin-bottom:6px;
@@ -594,7 +619,6 @@ body::after{
 }
 .btn-dash-excel:hover{background:linear-gradient(135deg,rgba(0,230,118,.32),rgba(0,200,81,.2));color:#fff;border-color:rgba(0,230,118,.6);transform:translateY(-1px);}
 
-/* ── زیادکراو بۆ لیستی وێستگەکان ── */
 .station-status-row {
   display: flex; justify-content: space-between; align-items: center;
   padding: 8px 12px; margin-bottom: 6px; border-radius: 8px;
