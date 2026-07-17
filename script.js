@@ -10,7 +10,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// بەردەوام گوێگرتن لە فایربەیس (گشتی و تایبەت)
 database.ref('electionDB').on('value', (snapshot) => {
     localStorage.setItem('electionDB', JSON.stringify(snapshot.val() || {}));
     if(currentUser && currentUser.role === 'dashboard') updateDashboardFromLocal();
@@ -21,11 +20,9 @@ database.ref('specialElectionDB').on('value', (snapshot) => {
     if(currentUser && currentUser.role === 'dashboard') updateDashboardFromLocal();
 });
 
-/* ─── STATE (گۆڕاوی جۆری هەڵبژاردن) ─── */
 let currentDashboardMode = 'general';
 let currentFormMode = 'general';
 
-/* ─── DATA ─── */
 let partiesData=[
   {name:"یەکێتی نیشتمانی",votes:0,color:"#00ffd5"},
   {name:"پارتی دیموکرات",  votes:0,color:"#ffab00"},
@@ -84,7 +81,6 @@ const electionData={
   ]
 };
 
-// داتای دەنگدانی تایبەت کە خۆت داوات کرد
 const specialElectionData = {
   "special": [
     {id: "sp1", name: "قوتابخانەی 1", stations: 5},
@@ -95,7 +91,6 @@ const specialElectionData = {
   ]
 };
 
-/* ─── RBAC ─── */
 const RBAC_USERS={
   'supervisor':     {pass:'2026', role:'dashboard'},
   'karmand1':       {pass:'1111', role:'form', zones:['1']},
@@ -107,7 +102,6 @@ const RBAC_USERS={
 };
 let currentUser=null;
 
-/* ─── LOGIN & DASHBOARD CONNECTIONS ─── */
 function attemptLogin(){
   const u=document.getElementById('username').value.trim();
   const p=document.getElementById('password').value;
@@ -126,9 +120,9 @@ function attemptLogin(){
     }
   } else { e.style.display='block'; }
 }
+
 function logout(){ if(confirm('دەتەوێت دەربچیت؟')) location.reload(); }
 
-/* ── تایمەری زیندوو ── */
 function startLiveTimer() {
   setInterval(() => {
     const now = new Date();
@@ -136,12 +130,16 @@ function startLiveTimer() {
   }, 1000);
 }
 
-/* ── دوگمەکانی گۆڕینی داشبۆرد ── */
 function changeElectionMode(mode) {
     currentDashboardMode = mode;
     document.getElementById('sw-general').className = 'sw-btn' + (mode==='general' ? ' active-general':'');
     document.getElementById('sw-special').className = 'sw-btn' + (mode==='special' ? ' active-special':'');
     document.getElementById('sw-both').className = 'sw-btn' + (mode==='both' ? ' active-both':'');
+    
+    // گۆڕینی ڕەنگەکان لەگەڵ جۆری هەڵبژاردن
+    document.body.classList.remove('theme-special', 'theme-both');
+    if(mode === 'special') document.body.classList.add('theme-special');
+    if(mode === 'both') document.body.classList.add('theme-both');
     
     const baznaSel = document.getElementById('baznaSelect');
     if(mode === 'special') {
@@ -151,31 +149,26 @@ function changeElectionMode(mode) {
     } else {
         baznaSel.innerHTML = '<option value="all">گشتی (هەردوو هەڵبژاردن)</option>';
     }
-    
     updateCenters();
 }
 
-/* ── دوگمەکانی گۆڕینی فۆڕم ── */
 function changeFormMode(mode) {
     currentFormMode = mode;
     document.getElementById('fsw-general').className = 'sw-btn' + (mode==='general' ? ' active-general':'');
     document.getElementById('fsw-special').className = 'sw-btn' + (mode==='special' ? ' active-special':'');
+    document.body.classList.remove('theme-special', 'theme-both');
+    if(mode === 'special') document.body.classList.add('theme-special');
     setupFormAccess(currentUser);
 }
 
-/* ── پێشکەوتوو: پاراستن و پاڵاوتنی (فلتەرکردنی) داتاکان بەپێی هەڵبژاردن ── */
 function updateDashboardFromLocal() {
     let localGenDB = JSON.parse(localStorage.getItem('electionDB')) || {};
     let localSpDB = JSON.parse(localStorage.getItem('specialElectionDB')) || {};
     
     let targetData = {};
-    if(currentDashboardMode === 'general') {
-        targetData = localGenDB;
-    } else if(currentDashboardMode === 'special') {
-        targetData = localSpDB;
-    } else {
-        targetData = {...localGenDB, ...localSpDB};
-    }
+    if(currentDashboardMode === 'general') targetData = localGenDB;
+    else if(currentDashboardMode === 'special') targetData = localSpDB;
+    else targetData = {...localGenDB, ...localSpDB};
 
     let keys = Object.keys(targetData);
     let selZone = document.getElementById('baznaSelect').value;
@@ -188,30 +181,21 @@ function updateDashboardFromLocal() {
 
     keys.forEach(key => {
         let parts = key.split('_');
-        let kZone = parts[0];
-        let kCenter = parts[1];
-        let kStation = parts[2];
-
-        if (selZone !== 'all' && kZone !== selZone) return;
-        if (selCenter !== 'all' && kCenter !== selCenter) return;
-        if (selStation !== 'all' && kStation !== selStation) return;
+        if (selZone !== 'all' && parts[0] !== selZone) return;
+        if (selCenter !== 'all' && parts[1] !== selCenter) return;
+        if (selStation !== 'all' && parts[2] !== selStation) return;
 
         let d = targetData[key];
         totalValid += parseInt(d.validVotes) || 0;
         totalInvalid += parseInt(d.invalidVotes) || 0;
         totalPuk += parseInt(d.puk) || 0;
 
-        let partyMap = {
-            "یەکێتی نیشتمانی": d.puk, "پارتی دیموکرات": d.pdk, "بزووتنەوەی گۆڕان": d.gorran,
-            "یەکگرتووی ئیسلامی": d.kiu, "نەوەی نوێ": d.neway, "کۆمەڵی دادگەری": d.komal,
-            "بەرەی گەل": d.baray, "ڕەوتی هەڵوێست": d.halwest, "لایەنەکانی تر": d.other
-        };
+        let partyMap = { "یەکێتی نیشتمانی":d.puk, "پارتی دیموکرات":d.pdk, "بزووتنەوەی گۆڕان":d.gorran, "یەکگرتووی ئیسلامی":d.kiu, "نەوەی نوێ":d.neway, "کۆمەڵی دادگەری":d.komal, "بەرەی گەل":d.baray, "ڕەوتی هەڵوێست":d.halwest, "لایەنەکانی تر":d.other };
         partiesData.forEach(p => { p.votes += parseInt(partyMap[p.name]) || 0; });
 
         for (let i = 1; i <= 50; i++) {
-            let candVote = parseInt(d.candidates[i]) || 0;
             let candObj = candidatesData.find(c => c.num === i);
-            if (candObj) candObj.votes += candVote;
+            if (candObj) candObj.votes += parseInt(d.candidates[i]) || 0;
         }
     });
 
@@ -225,67 +209,47 @@ function updateDashboardFromLocal() {
     renderStationsStatus(targetData, selZone, selCenter, selStation); 
 }
 
-/* ── لیستی ڕەوشی وێستگەکان بە فلتەرکراوی ── */
 function renderStationsStatus(targetData, selZone, selCenter, selStation) {
     let container = document.getElementById('stationsStatusContainer');
     let html = '';
-    
     let datasets = [];
+    
     if(currentDashboardMode === 'general') datasets.push({key:'general', data:electionData});
     else if(currentDashboardMode === 'special') datasets.push({key:'special', data:specialElectionData});
-    else {
-        datasets.push({key:'general', data:electionData});
-        datasets.push({key:'special', data:specialElectionData});
-    }
+    else { datasets.push({key:'general', data:electionData}); datasets.push({key:'special', data:specialElectionData}); }
     
     datasets.forEach(ds => {
         let eData = ds.data;
         for (let zone in eData) {
             if (selZone !== 'all' && zone !== selZone) continue; 
-
             eData[zone].forEach(center => {
                 if (selCenter !== 'all' && center.id !== selCenter) return; 
-
                 for (let i = 1; i <= center.stations; i++) {
                     if (selStation !== 'all' && i.toString() !== selStation) continue; 
-
                     let key = `${zone}_${center.id}_${i}`;
                     let zName = zone === 'special' ? 'تایبەت' : zone;
                     if (targetData[key]) {
-                        html += `<div class="station-status-row st-ok">
-                                    <div>بازنەی ${zName} — ${center.name} — وێستگەی ${i}</div>
-                                    <span><i class="fas fa-check-circle"></i> تۆمارکراوە</span>
-                                 </div>`;
+                        html += `<div class="station-status-row st-ok"><div>بازنەی ${zName} — ${center.name} — وێستگەی ${i}</div><span><i class="fas fa-check-circle"></i> تۆمارکراوە</span></div>`;
                     } else {
-                        html += `<div class="station-status-row st-bad">
-                                    <div>بازنەی ${zName} — ${center.name} — وێستگەی ${i}</div>
-                                    <span><i class="fas fa-times-circle"></i> هێشتا نەنووسراوە</span>
-                                 </div>`;
+                        html += `<div class="station-status-row st-bad"><div>بازنەی ${zName} — ${center.name} — وێستگەی ${i}</div><span><i class="fas fa-times-circle"></i> هێشتا نەنووسراوە</span></div>`;
                     }
                 }
             });
         }
     });
-    
     container.innerHTML = html || '<div style="text-align:center; color:gray; font-size:0.85rem; padding:10px;">هیچ وێستگەیەک نەدۆزرایەوە بۆ ئەم فلتەرە.</div>';
 }
 
-/* ─── DASHBOARD FILTERS ─── */
 function updateCenters(){
   const b = document.getElementById('baznaSelect').value;
   const bs = document.getElementById('binkaSelect');
   const ws = document.getElementById('westgaSelect');
-  bs.innerHTML='<option value="all">گشتی</option>';
-  ws.innerHTML='<option value="all">گشتی</option>';
-  
-  if(b === 'special') {
-      specialElectionData['special'].forEach(c=>bs.innerHTML+=`<option value="${c.id}" data-stations="${c.stations}">${c.name}</option>`);
-  } else if(b !== 'all' && electionData[b]) {
-      electionData[b].forEach(c=>bs.innerHTML+=`<option value="${c.id}" data-stations="${c.stations}">${c.name}</option>`);
-  }
-  
+  bs.innerHTML='<option value="all">گشتی</option>'; ws.innerHTML='<option value="all">گشتی</option>';
+  if(b === 'special') specialElectionData['special'].forEach(c=>bs.innerHTML+=`<option value="${c.id}" data-stations="${c.stations}">${c.name}</option>`);
+  else if(b !== 'all' && electionData[b]) electionData[b].forEach(c=>bs.innerHTML+=`<option value="${c.id}" data-stations="${c.stations}">${c.name}</option>`);
   updateDashboardFromLocal();
 }
+
 function updateStations(){
   const sel=document.getElementById('binkaSelect');
   const ws=document.getElementById('westgaSelect');
@@ -298,20 +262,16 @@ function updateStations(){
   updateDashboardFromLocal(); 
 }
 
-/* ─── DASHBOARD RENDER ─── */
 function renderParties(){
   partiesData.sort((a,b)=>b.votes-a.votes);
   const total=partiesData.reduce((s,p)=>s+p.votes,0);
   document.getElementById('partiesContainer').innerHTML=partiesData.map(p=>{
     const pct=total>0?(p.votes/total)*100:0;
     const isPuk=p.name.includes('یەکێتی');
-    return `<div class="prow">
-      <div class="pnm ${isPuk?'puk':''}">${p.name}</div>
-      <div class="ptrack"><div class="pfill" style="width:${pct}%;background:${p.color};"></div></div>
-      <div class="pct ${isPuk?'puk':''}">${p.votes.toLocaleString()}</div>
-    </div>`;
+    return `<div class="prow"><div class="pnm ${isPuk?'puk':''}">${p.name}</div><div class="ptrack"><div class="pfill" style="width:${pct}%;background:${p.color};"></div></div><div class="pct ${isPuk?'puk':''}">${p.votes.toLocaleString()}</div></div>`;
   }).join('');
 }
+
 function renderCandidates(){
   const q=document.getElementById('candidateSearch').value.trim();
   let filtered=candidatesData;
@@ -326,86 +286,63 @@ function renderCandidates(){
   filtered.sort((a,b)=>b.votes-a.votes);
   document.getElementById('candidatesContainer').innerHTML=filtered.map((c,i)=>{
     const bc=i===0?'g1':i===1?'g2':i===2?'g3':'';
-    return `<div class="crow">
-      <div class="crow-l">
-        <div class="cbadge ${bc}">${i+1}</div>
-        <div class="cnm">کاندیدی ژمارە <strong>${c.num}</strong></div>
-      </div>
-      <div class="cscore">${c.votes.toLocaleString()}</div>
-    </div>`;
+    return `<div class="crow"><div class="crow-l"><div class="cbadge ${bc}">${i+1}</div><div class="cnm">کاندیدی ژمارە <strong>${c.num}</strong></div></div><div class="cscore">${c.votes.toLocaleString()}</div></div>`;
   }).join('');
 }
 
-/* ─── FORM ACCESS ─── */
 function setupFormAccess(u){
   const z = document.getElementById('formZoneSelect');
   z.innerHTML = '<option value="">بازنە هەڵبژێرە...</option>';
-  
   if(currentFormMode === 'special') {
-      z.innerHTML += `<option value="special">دەنگدانی تایبەت</option>`;
-      z.value = 'special';
-      z.disabled = true;
-      updateFormCenters();
+      z.innerHTML += `<option value="special">دەنگدانی تایبەت</option>`; z.value = 'special'; z.disabled = true; updateFormCenters();
   } else {
       u.zones.forEach(v=>{
         const names={'1':'بازنەی ١ — ڕۆژهەڵاتی چەمچەماڵ','2':'بازنەی ٢ — ڕۆژئاوای چەمچەماڵ','3':'بازنەی ٣ — شۆڕش','4':'بازنەی ٤ — تەکیە و ئاغجەلەر'};
         z.innerHTML+=`<option value="${v}">${names[v]}</option>`;
       });
       if(u.zones.length===1){z.value=u.zones[0];z.disabled=true;updateFormCenters();}
-      else {z.disabled=false;}
+      else z.disabled=false;
   }
 }
+
 function updateFormCenters(){
-  const z=document.getElementById('formZoneSelect');
-  const c=document.getElementById('formCenterSelect');
-  const s=document.getElementById('formStationSelect');
-  c.innerHTML='<option value="">بنکە هەڵبژێرە...</option>';
-  s.innerHTML='<option value="">...</option>';s.disabled=true;clearForm();
-  const zone=z.value;if(!zone)return;
-  
-  let centers = [];
-  if(zone === 'special') {
-      centers = specialElectionData['special'];
-  } else {
-      centers = electionData[zone]||[];
-      if(currentUser.include)centers=centers.filter(cx=>currentUser.include.includes(cx.id));
-      if(currentUser.exclude)centers=centers.filter(cx=>!currentUser.exclude.includes(cx.id));
-  }
-  
+  const z=document.getElementById('formZoneSelect'), c=document.getElementById('formCenterSelect'), s=document.getElementById('formStationSelect');
+  c.innerHTML='<option value="">بنکە هەڵبژێرە...</option>'; s.innerHTML='<option value="">...</option>'; s.disabled=true; clearForm();
+  const zone=z.value; if(!zone) return;
+  let centers = zone === 'special' ? specialElectionData['special'] : (electionData[zone]||[]);
+  if(zone !== 'special' && currentUser.include) centers=centers.filter(cx=>currentUser.include.includes(cx.id));
+  if(zone !== 'special' && currentUser.exclude) centers=centers.filter(cx=>!currentUser.exclude.includes(cx.id));
   centers.forEach(cx=>c.innerHTML+=`<option value="${cx.id}" data-stations="${cx.stations}">${cx.name}</option>`);
   c.disabled=false;
 }
+
 function updateFormStations(){
-  const c=document.getElementById('formCenterSelect');
-  const s=document.getElementById('formStationSelect');
-  s.innerHTML='<option value="">وێستگە...</option>';clearForm();
+  const c=document.getElementById('formCenterSelect'), s=document.getElementById('formStationSelect');
+  s.innerHTML='<option value="">وێستگە...</option>'; clearForm();
   const opt=c.options[c.selectedIndex];
   if(opt&&opt.value){
     const cnt=parseInt(opt.getAttribute('data-stations'))||0;
     for(let i=1;i<=cnt;i++)s.innerHTML+=`<option value="${i}">وێستگەی ${i}</option>`;
     s.disabled=false;
-  }else s.disabled=true;
+  } else s.disabled=true;
 }
+
 function onStationChange(){
   clearForm();
-  const zone=document.getElementById('formZoneSelect').value;
-  const center=document.getElementById('formCenterSelect').value;
-  const station=document.getElementById('formStationSelect').value;
-  if(!zone||!center||!station)return;
+  const zone=document.getElementById('formZoneSelect').value, center=document.getElementById('formCenterSelect').value, station=document.getElementById('formStationSelect').value;
+  if(!zone||!center||!station) return;
   const key=zone+'_'+center+'_'+station;
-  
   let dbStr = currentFormMode === 'special' ? 'specialElectionDB' : 'electionDB';
   const db=JSON.parse(localStorage.getItem(dbStr))||{};
   const btn=document.getElementById('mainSubmitBtn');
-  if(db[key]){fillFormWithData(db[key]);btn.innerHTML='<i class="fas fa-edit"></i> نوێکردنەوەی زانیارییەکان';btn.classList.add('upd');}
-  else{btn.innerHTML='<i class="fas fa-save"></i> تۆمارکردنی داتاکان';btn.classList.remove('upd');}
+  if(db[key]){ fillFormWithData(db[key]); btn.innerHTML='<i class="fas fa-edit"></i> نوێکردنەوەی زانیارییەکان'; btn.classList.add('upd'); }
+  else{ btn.innerHTML='<i class="fas fa-save"></i> تۆمارکردنی داتاکان'; btn.classList.remove('upd'); }
   checkFormTotals();
 }
 
-/* ─── CANDIDATE INPUTS ─── */
 const fcc=document.getElementById('formCandidatesContainer');
 for(let i=1;i<=50;i++){
-  const d=document.createElement('div');d.className='ccell';
+  const d=document.createElement('div'); d.className='ccell';
   d.innerHTML=`<span class="ccell-lbl">${i}</span><input type="number" class="fcand-input formClearable" id="fcand_${i}" oninput="checkFormCandidates()">`;
   fcc.appendChild(d);
 }
@@ -417,41 +354,38 @@ fcc.addEventListener('keydown',e=>{
   }
 });
 
-/* ─── FORM HELPERS ─── */
 function clearForm(){
   document.querySelectorAll('.formClearable').forEach(i=>i.value='');
   const btn=document.getElementById('mainSubmitBtn');
-  btn.innerHTML='<i class="fas fa-save"></i> تۆمارکردنی داتاکان';btn.classList.remove('upd');
+  btn.innerHTML='<i class="fas fa-save"></i> تۆمارکردنی داتاکان'; btn.classList.remove('upd');
   checkFormTotals();
 }
+
 function fillFormWithData(d){
-  document.getElementById('fValidVotes').value=d.validVotes||'';
-  document.getElementById('fInvalidVotes').value=d.invalidVotes||'';
-  document.getElementById('fPukVotes').value=d.puk||'';
-  document.getElementById('fPdkVotes').value=d.pdk||'';
-  document.getElementById('fGorranVotes').value=d.gorran||'';
-  document.getElementById('fKiuVotes').value=d.kiu||'';
-  document.getElementById('fNewayVotes').value=d.neway||'';
-  document.getElementById('fKomalVotes').value=d.komal||'';
-  document.getElementById('fBarayVotes').value=d.baray||'';
-  document.getElementById('fHalwestVotes').value=d.halwest||'';
+  document.getElementById('fValidVotes').value=d.validVotes||''; document.getElementById('fInvalidVotes').value=d.invalidVotes||'';
+  document.getElementById('fPukVotes').value=d.puk||''; document.getElementById('fPdkVotes').value=d.pdk||'';
+  document.getElementById('fGorranVotes').value=d.gorran||''; document.getElementById('fKiuVotes').value=d.kiu||'';
+  document.getElementById('fNewayVotes').value=d.neway||''; document.getElementById('fKomalVotes').value=d.komal||'';
+  document.getElementById('fBarayVotes').value=d.baray||''; document.getElementById('fHalwestVotes').value=d.halwest||'';
   document.getElementById('fOtherVotes').value=d.other||'';
-  for(let i=1;i<=50;i++)document.getElementById('fcand_'+i).value=d.candidates[i]||'';
+  for(let i=1;i<=50;i++) document.getElementById('fcand_'+i).value=d.candidates[i]||'';
 }
+
 function gatherFormData(){
   const d={
-    validVotes:document.getElementById('fValidVotes').value,
-    invalidVotes:document.getElementById('fInvalidVotes').value,
-    puk:document.getElementById('fPukVotes').value,pdk:document.getElementById('fPdkVotes').value,
-    gorran:document.getElementById('fGorranVotes').value,kiu:document.getElementById('fKiuVotes').value,
-    neway:document.getElementById('fNewayVotes').value,komal:document.getElementById('fKomalVotes').value,
-    baray:document.getElementById('fBarayVotes').value,halwest:document.getElementById('fHalwestVotes').value,
-    other:document.getElementById('fOtherVotes').value,candidates:{}
+    validVotes:document.getElementById('fValidVotes').value, invalidVotes:document.getElementById('fInvalidVotes').value,
+    puk:document.getElementById('fPukVotes').value, pdk:document.getElementById('fPdkVotes').value,
+    gorran:document.getElementById('fGorranVotes').value, kiu:document.getElementById('fKiuVotes').value,
+    neway:document.getElementById('fNewayVotes').value, komal:document.getElementById('fKomalVotes').value,
+    baray:document.getElementById('fBarayVotes').value, halwest:document.getElementById('fHalwestVotes').value,
+    other:document.getElementById('fOtherVotes').value, candidates:{}
   };
-  for(let i=1;i<=50;i++)d.candidates[i]=document.getElementById('fcand_'+i).value;
+  for(let i=1;i<=50;i++) d.candidates[i]=document.getElementById('fcand_'+i).value;
   return d;
 }
+
 function v(id){return parseInt(document.getElementById(id).value)||0;}
+
 function checkFormTotals(){
   const valid=v('fValidVotes'),invalid=v('fInvalidVotes'),puk=v('fPukVotes');
   const total=puk+v('fPdkVotes')+v('fGorranVotes')+v('fKiuVotes')+v('fNewayVotes')+v('fKomalVotes')+v('fBarayVotes')+v('fHalwestVotes')+v('fOtherVotes');
@@ -461,6 +395,7 @@ function checkFormTotals(){
   document.getElementById('fPartyError').style.display=total>valid?'block':'none';
   checkFormCandidates();
 }
+
 function checkFormCandidates(){
   const puk=v('fPukVotes');let tc=0;
   document.querySelectorAll('.fcand-input').forEach(i=>tc+=parseInt(i.value)||0);
@@ -468,21 +403,17 @@ function checkFormCandidates(){
   document.getElementById('fCandidateError').style.display=tc>puk?'block':'none';
 }
 
-/* ─── MODAL ─── */
 function showReviewModal(){
-  const valid=v('fValidVotes'),invalid=v('fInvalidVotes'),puk=v('fPukVotes');
+  const valid=v('fValidVotes'), invalid=v('fInvalidVotes'), puk=v('fPukVotes');
   const ps=puk+v('fPdkVotes')+v('fGorranVotes')+v('fKiuVotes')+v('fNewayVotes')+v('fKomalVotes')+v('fBarayVotes')+v('fHalwestVotes')+v('fOtherVotes');
   const cs=parseInt(document.getElementById('fTotalCandidateVotes').innerText)||0;
-  const cs2=document.getElementById('formCenterSelect');
-  const st=document.getElementById('formStationSelect').value;
+  const cs2=document.getElementById('formCenterSelect'), st=document.getElementById('formStationSelect').value;
   
   if(!cs2.value||!st){alert('تکایە سەرەتا بنکە و وێستگە دیاری بکە!');return;}
   if(valid === 0 && invalid === 0){alert('تکایە دڵنیابە فۆڕمەکەت بەتاڵ نییە پێش ناردن!');return;}
   if(ps>valid){alert('تکایە هەڵەی ژمارەی لایەنەکان چاک بکە!');return;}
   if(cs>puk){alert('تکایە هەڵەی ژمارەی کاندیدەکان چاک بکە!');return;}
-  if(puk>0 && cs===0){
-      if(!confirm('ئاگاداربە: دەنگی یەکێتیت نووسیوە بەڵام هیچ دەنگێکت بۆ کاندیدەکان نەنووسیوە. دەتەوێت بەردەوام بیت؟')) return;
-  }
+  if(puk>0 && cs===0) if(!confirm('ئاگاداربە: دەنگی یەکێتیت نووسیوە بەڵام هیچ دەنگێکت بۆ کاندیدەکان نەنووسیوە. دەتەوێت بەردەوام بیت؟')) return;
   
   document.getElementById('modalCenter').innerText=cs2.options[cs2.selectedIndex].text;
   document.getElementById('modalStation').innerText=st;
@@ -496,16 +427,13 @@ function closeModal(){document.getElementById('reviewModal').style.display='none
 
 function confirmSave(){
   closeModal();
-  const zone=document.getElementById('formZoneSelect').value;
-  const center=document.getElementById('formCenterSelect').value;
-  const station=document.getElementById('formStationSelect').value;
+  const zone=document.getElementById('formZoneSelect').value, center=document.getElementById('formCenterSelect').value, station=document.getElementById('formStationSelect').value;
   const key=zone+'_'+center+'_'+station;
   const data=gatherFormData();
   const cs=document.getElementById('formCenterSelect');
-  data.centerName=cs.options[cs.selectedIndex].text;data.stationNum=station;
+  data.centerName=cs.options[cs.selectedIndex].text; data.stationNum=station;
   
   let path = (currentFormMode === 'special') ? 'specialElectionDB/' : 'electionDB/';
-  
   firebase.database().ref(path + key).set(data).then(() => {
       alert('سەرکەوتووە! داتاکانی ئەم وێستگەیە بە سەرکەوتوویی چوونە سەر فایربەیس.');
       onStationChange();
@@ -514,48 +442,25 @@ function confirmSave(){
   });
 }
 
-/* ─── DASHBOARD EXCEL EXPORT ─── */
 function exportDashboardExcel(){
   let localGenDB = JSON.parse(localStorage.getItem('electionDB')) || {};
   let localSpDB = JSON.parse(localStorage.getItem('specialElectionDB')) || {};
-  
-  let db = {};
-  let titleSuffix = "";
-  if(currentDashboardMode === 'general') {
-      db = localGenDB;
-      titleSuffix = " (دەنگدانی گشتی)";
-  } else if(currentDashboardMode === 'special') {
-      db = localSpDB;
-      titleSuffix = " (دەنگدانی تایبەت)";
-  } else {
-      db = {...localGenDB, ...localSpDB};
-      titleSuffix = " (گشتی + تایبەت)";
-  }
+  let db = {}, titleSuffix = "";
+  if(currentDashboardMode === 'general') { db = localGenDB; titleSuffix = " (دەنگدانی گشتی)"; } 
+  else if(currentDashboardMode === 'special') { db = localSpDB; titleSuffix = " (دەنگدانی تایبەت)"; } 
+  else { db = {...localGenDB, ...localSpDB}; titleSuffix = " (گشتی + تایبەت)"; }
   
   const keys=Object.keys(db);
   if(!keys.length){alert('هیچ داتایەک نەدۆزرایەوە بۆ ئەم هەڵبژاردنە!');return;}
 
   const partyNames=['یەکێتی','پارتی','گۆڕان','یەکگرتوو','نەوەی نوێ','کۆمەڵ','بەرەی گەل','هەڵوێست','تر'];
   const partyKeys =['puk','pdk','gorran','kiu','neway','komal','baray','halwest','other'];
-  const zoneNames={'1':'بازنەی ١ — ڕۆژهەڵات','2':'بازنەی ٢ — ڕۆژئاوا','3':'بازنەی ٣ — شۆڕش','4':'بازنەی ٤ — تەکیە', 'special': 'دەنگدانی تایبەت'};
+  const zoneNames={'1':'بازنەی ١','2':'بازنەی ٢','3':'بازنەی ٣','4':'بازنەی ٤', 'special': 'تایبەت'};
 
   let rows=[];
   keys.forEach(key=>{
-    const parts=key.split('_'); 
-    const zone=parts[0];
-    const centerId=parts[1];
-    const station=parts[2];
-    const d=db[key];
-    let centerName=d.centerName||centerId;
-    let row={
-      zone: zoneNames[zone]||'—',
-      center: centerName,
-      station: 'وێستگەی '+station,
-      valid: parseInt(d.validVotes)||0,
-      invalid: parseInt(d.invalidVotes)||0,
-      total: (parseInt(d.validVotes)||0)+(parseInt(d.invalidVotes)||0),
-      candidates: d.candidates||{}
-    };
+    const parts=key.split('_'); const zone=parts[0], centerId=parts[1], station=parts[2], d=db[key];
+    let row={ zone: zoneNames[zone]||'—', center: d.centerName||centerId, station: 'وێستگەی '+station, valid: parseInt(d.validVotes)||0, invalid: parseInt(d.invalidVotes)||0, total: (parseInt(d.validVotes)||0)+(parseInt(d.invalidVotes)||0), candidates: d.candidates||{} };
     partyKeys.forEach(pk=>{ row[pk]=parseInt(d[pk])||0; });
     rows.push(row);
   });
@@ -574,11 +479,10 @@ function exportDashboardExcel(){
   html+=`<tr><th colspan="${totalCols}" class="hd1 fz">📊 ڕاپۆرتی گشتی هەڵبژاردن — مەڵبەندی ١٢ی ڕێکخستنی چەمچەماڵ ${titleSuffix}</th></tr>`;
   html+=`<tr><th colspan="${totalCols}" class="hd2">کۆی وێستگەکان: ${rows.length} | سەرجەمی بەشداربووان: ${totals.total.toLocaleString()} | دەنگی دروست: ${totals.valid.toLocaleString()} | دەنگی یەکێتی: ${totals.puk.toLocaleString()}</th></tr><tr><th class="hd3">بازنە</th><th class="hd3">ناوی بنکە</th><th class="hd3">وێستگە</th><th class="hd3">دەنگی دروست</th><th class="hd3">دەنگی پووچەڵ</th><th class="hd3">کۆی گشتی</th>`;
   partyNames.forEach((n,i)=>html+=`<th class="hd3 ${partyKeys[i]}">${n}</th>`);
-  for(let i=1;i<=50;i++) html+=`<th class="hd3">کاندیدی ${i}</th>`;
-  html+=`</tr>`;
+  for(let i=1;i<=50;i++) html+=`<th class="hd3">کاندیدی ${i}</th></tr>`;
 
   rows.forEach(r=>{
-    const zClass='zone'+(r.zone.includes('ڕۆژهەڵات')?'1':r.zone.includes('ڕۆژئاوا')?'2':r.zone.includes('شۆڕش')?'3':r.zone.includes('تایبەت')?'special':'4');
+    const zClass='zone'+(r.zone.includes('١')?'1':r.zone.includes('٢')?'2':r.zone.includes('٣')?'3':r.zone.includes('تایبەت')?'special':'4');
     html+=`<tr><td class="${zClass} num">${r.zone}</td><td>${r.center}</td><td class="num">${r.station}</td><td class="num" style="color:green;font-weight:bold;">${r.valid}</td><td class="num" style="color:red;">${r.invalid}</td><td class="num" style="font-weight:bold;">${r.total}</td>`;
     partyKeys.forEach(pk=>html+=`<td class="num ${pk}">${r[pk]}</td>`);
     for(let i=1;i<=50;i++) html+=`<td class="num">${parseInt(r.candidates[i])||0}</td>`;
@@ -587,21 +491,81 @@ function exportDashboardExcel(){
 
   html+=`<tr><td colspan="3" class="tot" style="text-align:center;">📌 کۆی گشتی هەموو وێستگەکان</td><td class="tot num" style="color:green;">${totals.valid}</td><td class="tot num" style="color:red;">${totals.invalid}</td><td class="tot num">${totals.total}</td>`;
   partyKeys.forEach(pk=>html+=`<td class="tot num">${totals[pk]}</td>`);
-  for(let i=1;i<=50;i++) html+=`<td class="tot num">${totals['c'+i]}</td>`;
-  html+=`</tr></table></body></html>`;
+  for(let i=1;i<=50;i++) html+=`<td class="tot num">${totals['c'+i]}</td></tr></table></body></html>`;
 
   const b=new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(b);
-  a.download=`ڕاپۆرتی_هەڵبژاردن${titleSuffix}.xls`;
-  a.click();
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=`ڕاپۆرتی_هەڵبژاردن${titleSuffix}.xls`; a.click();
 }
 
-/* ── تۆمارکردنی Service Worker بۆ PWA ── */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js').catch(err => {
-        console.log('Service Worker تۆمار نەکرا:', err);
-    });
+  window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').catch(err => { console.log('Service Worker تۆمار نەکرا:', err); }); });
+}
+
+/* ════════ THEME SYSTEM (ڕووکارەکان) ════════ */
+// ناوەکان گۆڕان بۆ قسەی ڕۆژانەی کوردی
+const themeData = [
+  { id: 'dark', name: 'تاریک', emoji: '🌙' },
+  { id: 'light', name: 'ڕووناک', emoji: '☀️' },
+  { id: 'contrast', name: 'تۆخ', emoji: '⚡' },
+  { id: 'soft', name: 'هێمن', emoji: '🌤️' },
+  { id: 'sunset', name: 'ئێواران', emoji: '🌅' },
+  { id: 'ocean', name: 'دەریایی', emoji: '🌊' },
+  { id: 'forest', name: 'سرووشت', emoji: '🌲' }
+];
+
+let currentTheme = localStorage.getItem('dashboardTheme') || 'dark';
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('dashboardTheme', theme);
+  currentTheme = theme;
+  const currentThemeData = themeData.find(t => t.id === theme);
+  if (currentThemeData) {
+    document.getElementById('currentThemeEmoji').textContent = currentThemeData.emoji;
+    document.getElementById('currentThemeName').textContent = currentThemeData.name;
+  }
+  document.querySelectorAll('.theme-menu-item').forEach(item => {
+    if (item.getAttribute('data-theme') === theme) item.classList.add('active');
+    else item.classList.remove('active');
   });
 }
+
+function toggleThemeMenu() {
+  document.getElementById('themeMenu').classList.toggle('show');
+  document.getElementById('themeDropdownToggle').classList.toggle('active');
+}
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('themeMenu'), dropdown = document.getElementById('themeDropdownToggle');
+  if (dropdown && menu && !dropdown.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('show'); dropdown.classList.remove('active');
+  }
+});
+
+function createThemeMenu() {
+  const menu = document.getElementById('themeMenu');
+  if (!menu) return;
+  menu.innerHTML = '';
+  themeData.forEach(theme => {
+    const item = document.createElement('div');
+    item.className = 'theme-menu-item' + (theme.id === currentTheme ? ' active' : '');
+    item.setAttribute('data-theme', theme.id);
+    item.innerHTML = `<span class="theme-menu-emoji">${theme.emoji}</span> <span class="theme-menu-name">${theme.name}</span>`;
+    item.addEventListener('click', () => { applyTheme(theme.id); toggleThemeMenu(); });
+    menu.appendChild(item);
+  });
+}
+
+function initThemeSystem() {
+  applyTheme(currentTheme); createThemeMenu();
+  document.addEventListener('keydown', (e) => {
+    if (e.altKey && e.key === 't') {
+      e.preventDefault();
+      const themes = themeData.map(t => t.id);
+      applyTheme(themes[(themes.indexOf(currentTheme) + 1) % themes.length]);
+    }
+  });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initThemeSystem);
+else initThemeSystem();
