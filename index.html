@@ -7,20 +7,16 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<!-- بەستنەوەی فایلی ستایلەکان -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="aurora-bg"><div class="orb3"></div><div class="orb4"></div></div>
 
-<!-- ════════════════ LOGIN ════════════════ -->
 <div id="login-section">
 <div class="login-wrap">
   <div class="login-stage">
-    <span class="blob"></span>
-    <span class="blob"></span>
-    <span class="blob"></span>
+    <span class="blob"></span><span class="blob"></span><span class="blob"></span>
     <div class="login-card">
       <div class="login-brand">
         <h2>سیستەمی ئەلیکترۆنی مەڵبەندی چەمچەماڵ</h2>
@@ -50,7 +46,6 @@
 </div>
 </div>
 
-<!-- ════════════════ DASHBOARD ════════════════ -->
 <div id="dashboard-section">
   <header class="top-bar">
     <div class="top-bar-inner">
@@ -62,6 +57,15 @@
         </div>
       </div>
       <div class="top-actions">
+        <div class="theme-selector-group">
+          <span class="theme-label-top">ڕووکار:</span>
+          <div class="theme-dropdown" id="themeDropdownToggle" onclick="toggleThemeMenu()">
+            <span id="currentThemeEmoji">🌙</span>
+            <span id="currentThemeName">تاریک</span>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+          <div class="theme-menu" id="themeMenu"></div>
+        </div>
         <div class="chip chip-blue" id="liveTimerDisplay" style="animation-delay:.05s"><i class="fas fa-clock"></i> 00:00:00</div>
         <div class="chip chip-green" style="animation-delay:.1s"><i class="fas fa-user-shield"></i> لێپرسراوی مەڵبەند</div>
         <div class="chip chip-red"   style="animation-delay:.2s"><i class="fas fa-satellite-dish"></i> لایڤ</div>
@@ -71,15 +75,12 @@
   </header>
 
   <div class="dash-body container-fluid">
-
-    <!-- دوگمەکانی گۆڕینی جۆری هەڵبژاردن -->
     <div class="switch-group">
       <button class="sw-btn active-general" id="sw-general" onclick="changeElectionMode('general')"><i class="fas fa-users"></i> دەنگدانی گشتی</button>
       <button class="sw-btn" id="sw-special" onclick="changeElectionMode('special')"><i class="fas fa-user-shield"></i> دەنگدانی تایبەت</button>
-      <button class="sw-btn" id="sw-both" onclick="changeElectionMode('both')"><i class="fas fa-chart-pie"></i> دەنگدانی گشتی + دەنگدانی تایبەت</button>
+      <button class="sw-btn" id="sw-both" onclick="changeElectionMode('both')"><i class="fas fa-chart-pie"></i> دەنگدانی گشتی + تایبەت</button>
     </div>
 
-    <!-- فلتەرەکان -->
     <div class="gc filter-bar" style="margin-bottom:18px;">
       <div class="row g-3 align-items-end">
         <div class="col-md-3 col-sm-6">
@@ -111,8 +112,6 @@
             <input type="text" class="ginput" style="padding-right:36px!important;" placeholder="نموونە: 15 یان 1-5" id="candidateSearch" oninput="renderCandidates()">
           </div>
         </div>
-        
-        <!-- بەشی ڕاپۆرتی ئێکسڵ (لادانی پاراستنی داتا) -->
         <div class="col-md-2 col-sm-4">
             <div class="flabel" style="color:#69ffa8;">ڕاپۆرتی گشتی</div>
             <button class="btn-dash-excel" onclick="exportDashboardExcel()">
@@ -122,7 +121,6 @@
       </div>
     </div>
 
-    <!-- ستاتەکان -->
     <div class="stat-grid">
       <div class="gc scard">
         <div class="scard-ico ico-p"><i class="fas fa-users"></i></div>
@@ -142,7 +140,6 @@
       </div>
     </div>
 
-    <!-- پانێلەکان -->
     <div class="panels-row">
       <div class="gc panel">
         <div class="panel-hd">
@@ -162,7 +159,6 @@
       </div>
     </div>
 
-    <!-- بینینی ڕەوشی وێستگەکان -->
     <div class="gc panel mt-3">
       <div class="panel-hd">
         <div class="panel-hd-ico" style="background:rgba(0,255,213,.18);color:#00ffd5;"><i class="fas fa-tasks"></i></div>
@@ -179,7 +175,6 @@
   </div>
 </div>
 
-<!-- ════════════════ APP ════════════════ -->
 <div id="app-section">
   <header class="top-bar no-print">
     <div class="top-bar-inner">
@@ -196,18 +191,13 @@
 
   <div class="app-body">
   <div class="container">
-
     <div class="action-bar no-print">
       <button class="btn-act btn-act-p" onclick="window.print()"><i class="fas fa-print"></i> پرینتکردن</button>
     </div>
-
     <div id="printable-area">
-
-      <!-- دوگمەی گۆڕینی فۆڕم بۆ کارمەند -->
       <div class="gc fc no-print">
         <div class="fc-head" style="background:rgba(0,0,0,0.2);">
-          <div class="fc-ico"><i class="fas fa-vote-yea"></i></div>
-          جۆری هەڵبژاردن دیاری بکە
+          <div class="fc-ico"><i class="fas fa-vote-yea"></i></div> جۆری هەڵبژاردن دیاری بکە
         </div>
         <div class="fc-body">
           <div class="switch-group" style="margin-bottom:0;">
@@ -217,13 +207,8 @@
         </div>
       </div>
 
-      <!-- 1 جوگرافی -->
       <div class="gc fc">
-        <div class="fc-head">
-          <div class="fc-ico"><i class="fas fa-map-marker-alt"></i></div>
-          <div class="fc-num">١</div>
-          زانیاری جوگرافی
-        </div>
+        <div class="fc-head"><div class="fc-ico"><i class="fas fa-map-marker-alt"></i></div><div class="fc-num">١</div> زانیاری جوگرافی</div>
         <div class="fc-body">
           <div class="row g-3">
             <div class="col-md-4">
@@ -242,89 +227,38 @@
         </div>
       </div>
 
-      <!-- 2 پوختەی دەنگ -->
       <div class="gc fc">
-        <div class="fc-head">
-          <div class="fc-ico"><i class="fas fa-chart-pie"></i></div>
-          <div class="fc-num">٢</div>
-          پوختەی دەنگەکان
-        </div>
+        <div class="fc-head"><div class="fc-ico"><i class="fas fa-chart-pie"></i></div><div class="fc-num">٢</div> پوختەی دەنگەکان</div>
         <div class="fc-body">
           <div class="vboxes">
-            <div class="vbox vb-ok">
-              <div class="vbox-lbl">دەنگی دروست</div>
-              <input type="number" class="formClearable" id="fValidVotes" oninput="checkFormTotals()" placeholder="٠">
-            </div>
-            <div class="vbox vb-bad">
-              <div class="vbox-lbl">دەنگی پوچەڵ</div>
-              <input type="number" class="formClearable" id="fInvalidVotes" oninput="checkFormTotals()" placeholder="٠">
-            </div>
-            <div class="vbox vb-tot">
-              <div class="vbox-lbl">کۆی گشتی</div>
-              <input type="number" class="formClearable" id="fTotalVotes" disabled placeholder="٠">
-            </div>
+            <div class="vbox vb-ok"><div class="vbox-lbl">دەنگی دروست</div><input type="number" class="formClearable" id="fValidVotes" oninput="checkFormTotals()" placeholder="٠"></div>
+            <div class="vbox vb-bad"><div class="vbox-lbl">دەنگی پوچەڵ</div><input type="number" class="formClearable" id="fInvalidVotes" oninput="checkFormTotals()" placeholder="٠"></div>
+            <div class="vbox vb-tot"><div class="vbox-lbl">کۆی گشتی</div><input type="number" class="formClearable" id="fTotalVotes" disabled placeholder="٠"></div>
           </div>
         </div>
       </div>
 
-      <!-- 3 لایەنەکان -->
       <div class="gc fc">
-        <div class="fc-head">
-          <div class="fc-ico"><i class="fas fa-landmark"></i></div>
-          <div class="fc-num">٣</div>
-          دەنگی قەوارە و لایەنەکان
-        </div>
+        <div class="fc-head"><div class="fc-ico"><i class="fas fa-landmark"></i></div><div class="fc-num">٣</div> دەنگی قەوارە و لایەنەکان</div>
         <div class="fc-body">
           <div class="err-bar" id="fPartyError"><i class="fas fa-exclamation-triangle me-2"></i> ئاگاداربە: کۆی لایەنەکان زیاترە لە دەنگی دروست!</div>
           <div class="pgrid">
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#00ffd5;"></span> یەکێتی نیشتمانی كوردستان</div>
-              <input type="number" class="ainput pi-puk formClearable" id="fPukVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#ffab00;"></span> پارتی دیموکراتی كوردستان </div>
-              <input type="number" class="ainput pi-pdk formClearable" id="fPdkVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#2979ff;"></span> بزووتنەوەی گۆڕان</div>
-              <input type="number" class="ainput pi-gorran formClearable" id="fGorranVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#00bcd4;"></span> یەکگرتووی ئیسلامی</div>
-              <input type="number" class="ainput pi-kiu formClearable" id="fKiuVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#ff6d00;"></span> نەوەی نوێ</div>
-              <input type="number" class="ainput pi-neway formClearable" id="fNewayVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#90a4ae;"></span> کۆمەڵی دادگەری</div>
-              <input type="number" class="ainput pi-komal formClearable" id="fKomalVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#7c4dff;"></span> بەرەی گەل</div>
-              <input type="number" class="ainput pi-baray formClearable" id="fBarayVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form">
-              <div class="plabel-form"><span class="pdot" style="background:#e91e63;"></span> ڕەوتی هەڵوێست</div>
-              <input type="number" class="ainput pi-halwest formClearable" id="fHalwestVotes" oninput="checkFormTotals()">
-            </div>
-            <div class="prow-form pgrid-full">
-              <div class="plabel-form"><span class="pdot" style="background:#607d8b;"></span> کۆی لایەنەکانی تر</div>
-              <input type="number" class="ainput formClearable" id="fOtherVotes" oninput="checkFormTotals()">
-            </div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#00ffd5;"></span> یەکێتی نیشتمانی كوردستان</div><input type="number" class="ainput pi-puk formClearable" id="fPukVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#ffab00;"></span> پارتی دیموکراتی كوردستان </div><input type="number" class="ainput pi-pdk formClearable" id="fPdkVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#2979ff;"></span> بزووتنەوەی گۆڕان</div><input type="number" class="ainput pi-gorran formClearable" id="fGorranVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#00bcd4;"></span> یەکگرتووی ئیسلامی</div><input type="number" class="ainput pi-kiu formClearable" id="fKiuVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#ff6d00;"></span> نەوەی نوێ</div><input type="number" class="ainput pi-neway formClearable" id="fNewayVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#90a4ae;"></span> کۆمەڵی دادگەری</div><input type="number" class="ainput pi-komal formClearable" id="fKomalVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#7c4dff;"></span> بەرەی گەل</div><input type="number" class="ainput pi-baray formClearable" id="fBarayVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form"><div class="plabel-form"><span class="pdot" style="background:#e91e63;"></span> ڕەوتی هەڵوێست</div><input type="number" class="ainput pi-halwest formClearable" id="fHalwestVotes" oninput="checkFormTotals()"></div>
+            <div class="prow-form pgrid-full"><div class="plabel-form"><span class="pdot" style="background:#607d8b;"></span> کۆی لایەنەکانی تر</div><input type="number" class="ainput formClearable" id="fOtherVotes" oninput="checkFormTotals()"></div>
           </div>
           <div class="rem-tag"><i class="fas fa-balance-scale" style="color:var(--aurora1);"></i> ماوە لە دەنگی دروست: <strong id="fRemainingVotes">٠</strong></div>
         </div>
       </div>
 
-      <!-- 4 کاندیدەکان -->
       <div class="gc fc" style="animation-delay:.2s;">
-        <div class="puk-head">
-          <i class="fas fa-user-check"></i>
-          دەنگی کاندیدانی یەکێتی (٥٠ کاندید)
-          <small>بۆ خێرایی Enter یان ⬇️ بەکاربهێنە</small>
-        </div>
+        <div class="puk-head"><i class="fas fa-user-check"></i> دەنگی کاندیدانی یەکێتی (٥٠ کاندید) <small>بۆ خێرایی Enter یان ⬇️ بەکاربهێنە</small></div>
         <div class="fc-body">
           <div class="err-bar" id="fCandidateError"><i class="fas fa-exclamation-circle me-2"></i> هەڵە: کۆی کاندیدەکان زیاترە لە دەنگی لیست!</div>
           <div class="cgrid" id="formCandidatesContainer"></div>
@@ -334,8 +268,7 @@
           </div>
         </div>
       </div>
-
-    </div><!-- /printable-area -->
+    </div>
 
     <div class="no-print" style="margin-bottom:14px;">
       <button class="sub-btn" id="mainSubmitBtn" onclick="showReviewModal()">
@@ -349,7 +282,6 @@
   </div>
 </div>
 
-<!-- Modal -->
 <div id="reviewModal" class="modal-ov" style="display:none;">
   <div class="modal-box">
     <div class="modal-title"><i class="fas fa-clipboard-check me-2" style="color:var(--aurora1);"></i> دڵنیابوونەوە</div>
